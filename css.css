@@ -1,0 +1,63 @@
+<style>
+    
+    body, p {
+    font-family: 'Roboto', sans-serif; 
+    }
+    
+
+    body {
+        background-color: #121212 !important; 
+        color: #ffffff !important; 
+    }
+
+    h3, h6 {
+        font-family: 'Oswald', sans-serif; 
+        color: hsl(57, 77%, 38%) !important; 
+    }
+
+    a {
+        color: hsl(57, 77%, 38%) !important;
+    }
+
+    div.poster {
+        margin: 25px;
+        max-width: 100%;
+        height: auto;
+    }
+
+    div.title {
+        margin: 25px;
+        max-width: 100%;
+        height: auto;
+    }
+
+    p {text-align: center;}
+
+    @media only screen and (max-width: 768px) {
+        .col-3, .col-4, .col-1, .col-2 {
+          flex: 100%; 
+          max-width: 100%;
+        }
+      
+        img {
+          width: 100%; 
+          height: auto;
+        }
+      
+        .container-fluid {
+          padding: 10px; 
+        }
+      }
+      
+      @media only screen and (max-width: 480px) {
+        .poster img {
+          width: 80%;
+          height: auto;
+        }
+      
+        .title h3 {
+          font-size: 1.5rem; 
+        }
+      }
+
+</style>
