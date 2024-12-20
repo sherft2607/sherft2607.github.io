@@ -1,0 +1,345 @@
+/* General Styles */
+body {
+    background-color: #121212;
+    font-family: 'Product Sans', sans-serif;
+    margin: 0; /* Remove default margin */
+    color: #fff;
+
+}
+
+/* Header Styling */
+header {
+    width: 100%;
+    border-bottom: 3px solid #fff; /* Add underline to the entire navbar */
+    padding-bottom: 5px; /* Add some space between the navbar and the underline */
+}
+
+nav {
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Name Styling */
+.name {
+    font-family: 'Product Sans', sans-serif;
+    font-size: 2em;
+}
+
+/* Navigation List Styling (Header only) */
+header ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+header li {
+    margin-right: 20px;
+}
+
+/* Links Styling (Header only) */
+header a {
+    text-decoration: none;
+    color: #fff;
+    font-family: 'Product Sans', sans-serif;
+    padding: 10px 20px;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s, padding-left 0.3s;
+    font-size: 1.2em;
+}
+
+/* Links Hover Effect (Header only) */
+header a:hover {
+    background-color: #ccc;
+    color: #121212;
+    padding-left: 30px;
+}
+
+/* Menu Button Styling for Mobile (Header only) */
+.menu-button {
+    display: none;
+}
+
+/* Mobile Menu Styles (Header only) */
+@media (max-width: 768px) {
+    header ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 20px;
+        background-color: #121212;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+    }
+
+    header ul.active {
+        display: flex;
+    }
+
+    .menu-button {
+        display: block;
+        background-color: #fff;
+        color: #121212;
+        font-family: 'Product Sans', sans-serif;
+        border: none;
+        padding: 12px 18px;
+        cursor: pointer;
+        border-radius: 30px;
+        font-size: 1.5em;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .menu-button:hover {
+        background-color: #ccc;
+        transform: scale(1.05);
+    }
+
+    .menu-button:focus {
+        outline: none;
+        background-color: #bbb;
+    }
+
+    .menu-button:active {
+        background-color: #aaa;
+        transform: scale(0.98);
+    }
+
+    header ul li {
+        width: 100%;
+        margin: 5px 0;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        transition: border-color 0.3s;
+    }
+
+    header ul.active li {
+        border-color: #fff;
+    }
+
+    header ul li a {
+        text-align: left;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 1.5em;
+    }
+
+    header ul li a:hover {
+        background-color: #555;
+        color: #fff;
+        padding-left: 30px;
+    }
+}
+
+/* Additional Styles for Other Links Outside the Header */
+a {
+    text-decoration: none;
+    color: inherit; /* Avoid global color affecting other links */
+}
+
+/* If you need to add styling for other links specifically, you can do so below */
+
+
+
+/* About Page Specific Styles */
+main.about {
+    padding: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* About Header */
+.about-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.about-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.about-header p {
+    font-size: 1.2em;
+}
+
+/* Bio Section */
+.introduction {
+    margin-bottom: 30px;
+}
+
+.bio-container {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.image-container {
+    flex: 1;
+    text-align: center;
+}
+
+.profile-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.text-content {
+    flex: 2;
+    text-align: left;
+}
+
+.text-content h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.text-content p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.text-content a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.text-content a:hover {
+    color: #0056b3;
+}
+
+/* Updated Contact Button */
+.contact-button {
+    display: block;
+    margin-top: 20px;
+    background-color: #fff;
+    color: #000000!important;
+    font-size: 1.2em;
+    text-decoration: none;
+    border: 2px solid #fff;
+    padding: 3px 25px;
+    border-radius: 50px;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.contact-button:hover {
+    background-color: #ccc;
+    color: #121212;
+    transform: scale(1.05);
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+    .bio-container {
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .image-container {
+        flex: none;
+        margin-bottom: 20px;
+    }
+
+    .text-content {
+        flex: none;
+    }
+
+    .contact-button {
+        margin-left: 0;
+        text-align: center;
+    }
+}
+
+/* Contact Modal Styles */
+.contact-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #121212;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    color: #fff;
+}
+
+.close {
+    color: #fff;
+    font-size: 36px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #f1f1f1;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+form input,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #2c2c2c;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+form button {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Product Sans', sans-serif;
+    transition: background-color 0.3s, padding-left 0.3s, transform 0.3s;
+}
+
+form button:hover {
+    background-color: #ccc;
+    color: #121212;
+    padding-left: 30px;
+    transform: scale(1.05);
+}
+
+form button:focus {
+    outline: none;
+    background-color: #bbb;
+}
+
+form button:active {
+    background-color: #aaa;
+    transform: scale(0.98);
+}

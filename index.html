@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <link rel="stylesheet" href="about-style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Product+Sans&display=swap">
+</head>
+<body>
+    <!-- Header Component -->
+    <header>
+        <nav>
+            <div class="name">Shandon Jude Herft</div>
+            <button class="menu-button" onclick="toggleMenu()">Menu</button>
+            <ul>
+                <li><a href="index.html">About</a></li>
+                <li><a href="resume.html">Resume</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- About Page Content -->
+    <main class="about">
+        <section class="introduction">
+            <div class="bio-container">
+                <!-- Your Picture on the Left -->
+                <div class="image-container">
+                    <img src="headshot.jpg" alt="Shandon Jude Herft" class="profile-image">
+                </div>
+                <!-- Text Content on the Right -->
+                <div class="text-content">
+                    <h1>About</h1>
+                    <p>
+                        <strong>Shandon Jude Herft</strong> is an Indian Computational Designer based in the United States. 
+                        He graduated in 2018 with a Bachelor's in Architecture and a Master's in Construction Management 
+                        from <a href="https://www.iit.edu/">Illinois Institute of Technology</a>. 
+                        He is currently situated at <a href="http://code.arc.cmu.edu/">CodeLab at Carnegie Mellon University</a>.
+                    </p>
+                
+                    <p>
+                        Currently, Shandon works as a Research Assistant with Professor Joshua Bard in the 
+                        <a href="https://www.architecture.cmu.edu/school/facilities/design-fabrication-lab">Design Fabrication Lab</a>.
+                        His research focuses on creating custom scripts and workflows for robotic binder jetting using 
+                        building waste materials.
+                    </p>
+                
+                    <p>
+                        His interests include Robotics, and Virtual Reality. His thesis focuses 
+                        on developing a bidirectional interaction framework that connects Grasshopper, RobotStudio, Unity, 
+                        and the Meta Quest 3.
+                    </p>
+                
+                    <p>
+                        Shandon has worked with some of the world’s most renowned architecture firms, including <a href="https://www.kpf.com/">KPF</a> as a 
+                        Computational Design Intern. Other notable experiences include working at <a href="https://www.gensler.com/">Gensler</a>, <a href="https://palma.global/">PALMA</a>, and <a href="https://www.sobha.com/">SOBHA</a>.<br>
+                    </p>
+                
+                    <p>
+                        If you’d like to get in touch, feel free to email him at 
+                        <a href="mailto:sherft@andrew.cmu.edu">sherft@andrew.cmu.edu</a>, or call at 
+                        <a href="tel:+13126476180">+1 (312) 647-6180</a>. You can also connect with him on 
+                        <a href="https://www.linkedin.com/in/shandonherft/" target="_blank">LinkedIn</a> or explore his work 
+                        on <a href="https://github.com/sherft2607" target="_blank">GitHub</a>.
+                    </p>
+                
+                    <p>
+                        Prefer another way to reach out? <a href="javascript:void(0);" class="contact-button" onclick="openContactForm()">Contact Me</a>
+                    </p>
+                </div>                
+            </div>
+        </section>
+    </main>
+
+    <!-- Popup Form -->
+    <div id="contactFormModal" class="contact-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeContactForm()">&times;</span>
+            <h2>Contact</h2>
+            <form id="contactForm" action="send_email.php" method="POST">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" required>
+                
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" required>
+
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="about-script.js"></script>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('nav ul');
+            menu.classList.toggle('active');
+        }
+        
+        function openContactForm() {
+            document.getElementById("contactFormModal").style.display = "block";
+        }
+
+        function closeContactForm() {
+            document.getElementById("contactFormModal").style.display = "none";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+/* General Styles */
+body {
+    background-color: #121212;
+    font-family: 'Product Sans', sans-serif;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styles */
+header {
+    width: 100%;
+    border-bottom: 3px solid #fff; /* Add underline to the entire navbar */
+    padding-bottom: 5px; /* Add some space between the navbar and the underline */
+}
+
+nav {
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.name {
+    font-family: 'Product Sans', sans-serif;
+    font-size: 2em; /* Adjusted size for consistency */
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+li {
+    margin-right: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+    font-family: 'Product Sans', sans-serif;
+    padding: 10px 20px;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s, padding-left 0.3s;
+    font-size: 1.2em; /* Increased font size for consistency */
+}
+
+a:hover {
+    background-color: #ccc;
+    color: #121212;
+    padding-left: 30px;
+}
+
+.menu-button {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 20px;
+        background-color: #121212;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+    }
+
+    ul.active {
+        display: flex;
+    }
+
+    .menu-button {
+        display: block;
+        background-color: #fff;
+        color: #121212;
+        font-family: 'Product Sans', sans-serif;
+        border: none;
+        padding: 12px 18px;
+        cursor: pointer;
+        border-radius: 30px;
+        font-size: 1.5em; /* Increased font size for the button */
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .menu-button:hover {
+        background-color: #ccc;
+        transform: scale(1.05);
+    }
+
+    .menu-button:focus {
+        outline: none;
+        background-color: #bbb;
+    }
+
+    .menu-button:active {
+        background-color: #aaa;
+        transform: scale(0.98);
+    }
+
+    ul li {
+        width: 100%;
+        margin: 5px 0;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        transition: border-color 0.3s;
+    }
+
+    ul.active li {
+        border-color: #fff;
+    }
+
+    ul li a {
+        text-align: left;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 1.2em; /* Increased font size for mobile */
+    }
+
+    ul li a:hover {
+        background-color: #555;
+        color: #fff;
+        padding-left: 30px;
+    }
+}
+
+/* Resume Page Specific Styles */
+main.resume {
+    padding: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.resume-introduction {
+    margin-bottom: 30px;
+}
+
+.text-content {
+    flex: 1;
+    text-align: left;
+}
+
+.text-content h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.text-content p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.text-content a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.text-content a:hover {
+    color: #0056b3;
+}
+
+/* Styling the iframe */
+.resume-preview iframe {
+    width: 100%;
+    border: none;
+    display: block;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Desktop View */
+@media (min-width: 769px) {
+    .resume-preview iframe {
+        height: 1380px; /* Set the height based on the 8.5 x 11 size (1.5 x width) */
+    }
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+    .resume-preview iframe {
+        height: auto; /* Adjust height based on content */
+        max-width: 100%; /* Ensure it doesn't stretch beyond the screen width */
+        aspect-ratio: 8.5 / 11; /* Maintain aspect ratio for 8.5 x 11 size */
+    }
+}

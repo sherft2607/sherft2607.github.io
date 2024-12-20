@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume</title>
+    <link rel="stylesheet" href="resume-style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Product+Sans&display=swap">
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <nav>
+            <div class="name">Shandon Jude Herft</div>
+            <button class="menu-button" onclick="toggleMenu()">Menu</button>
+            <ul>
+                <li><a href="index.html">About</a></li>
+                <li><a href="resume.html">Resume</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Resume Section -->
+    <main class="resume">
+        <section class="resume-introduction">
+            <div class="text-content">
+                <h1>Resume</h1>
+                <p>Click the link below to view my full resume:</p>
+                <a href="https://drive.google.com/file/d/1HJAJG_V1Mfjs4Sk6C92vnFYOIHWv4xKC/view?usp=sharing" target="_blank">View My Resume (PDF)</a>
+            </div>
+        </section>
+
+        <section class="resume-preview">
+            <iframe src="https://drive.google.com/file/d/1HJAJG_V1Mfjs4Sk6C92vnFYOIHWv4xKC/preview" frameborder="0"></iframe>
+        </section>
+    </main>
+
+    <!-- JavaScript for Navbar -->
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('nav ul');
+            menu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
