@@ -14,7 +14,7 @@
             <div class="name">Shandon Herft</div>
             <button class="menu-button" onclick="toggleMenu()">Menu</button>
             <ul>
-                <li><a href="index.html">About</a></li>
+                <li><a href="about.html">About</a></li>
                 <li><a href="resume.html">Resume</a></li>
                 <li><a href="portfolio.html">Portfolio</a></li>
             </ul>
@@ -77,35 +77,37 @@
     <div id="contactFormModal" class="contact-modal">
         <div class="modal-content">
             <span class="close" onclick="closeContactForm()">&times;</span>
-            <h2>Contact</h2>
-            <form id="contactForm" action="send_email.php" method="POST">
-                <label for="firstName">First Name</label>
-                <input type="text" id="firstName" name="firstName" required>
-                
-                <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" name="lastName" required>
-
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required>
-
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" required>
-
-                <label for="message">Message</label>
-                <textarea id="message" name="message" required></textarea>
-
-                <button type="submit">Send</button>
-            </form>
+            <iframe 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSdLDj5NPS_OaDxmgLoh6FxHwdmMFYD-MIBjSHbPXQippUePUg/viewform?embedded=true" 
+                width="100%" 
+                height="600" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+                Loading…
+            </iframe>
         </div>
     </div>
+
 
     <script src="about-script.js"></script>
 
     <script>
         function toggleMenu() {
             const menu = document.querySelector('nav ul');
+            const button = document.querySelector('.menu-button');
             menu.classList.toggle('active');
+            const expanded = menu.classList.contains('active');
+            button.setAttribute('aria-expanded', expanded);
         }
+
+        // Close menu when clicking anywhere inside the ul
+        document.querySelector('nav ul').addEventListener('click', (event) => {
+            const menu = document.querySelector('nav ul');
+            menu.classList.remove('active');
+            const button = document.querySelector('.menu-button');
+            button.setAttribute('aria-expanded', false);
+        });
         
         function openContactForm() {
             document.getElementById("contactFormModal").style.display = "block";

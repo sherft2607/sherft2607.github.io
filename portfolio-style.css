@@ -198,18 +198,90 @@ iframe {
     margin-top: 20px;
 }
 
-/* Mobile View */
+/* Navbar Styles for Mobile */
 @media (max-width: 768px) {
+
     main.portfolio {
-        padding: 20px; /* Adjust padding for smaller screens */
+        padding: 20px;
     }
 
-    .portfolio-container {
-        flex-direction: column; /* Stack content vertically on smaller screens */
-        text-align: left;
+    /* Make the ul cover the entire screen when active */
+    ul {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw; /* Full viewport width */
+        height: 100vh; /* Full viewport height */
+        background-color: #121212;
+        flex-direction: column;
+        justify-content: center; /* Center items vertically */
+        align-items: center; /* Center items horizontally */
+        z-index: 1000; /* Ensure it overlays other content */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
     }
 
-    .text-content {
-        flex: none;
+    ul.active {
+        display: flex;
+    }
+
+    /* Style the individual list items in the full screen menu */
+    ul li {
+        margin: 15px 0;
+        width: 80%; /* Control width to ensure no overflow */
+        text-align: center;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        transition: border-color 0.3s;
+    }
+
+    ul.active li {
+        border-color: #fff;
+    }
+
+    /* Menu links styling */
+    ul li a {
+        font-size: 2em; /* Make text larger for better visibility */
+        padding: 15px 20px;
+        text-align: center;
+        display: block;
+        color: white;
+    }
+
+    ul li a:hover {
+        background-color: #555;
+        color: #fff;
+        padding-left: 30px;
+    }
+
+    /* Menu button (optional for full-screen view) */
+    .menu-button {
+        display: block;
+        background-color: #fff;
+        color: #121212;
+        font-family: 'Product Sans', sans-serif;
+        border: none;
+        padding: 12px 18px;
+        cursor: pointer;
+        border-radius: 30px;
+        font-size: 1.5em;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .menu-button:hover {
+        background-color: #ccc;
+        transform: scale(1.05);
+    }
+
+    .menu-button:focus {
+        outline: none;
+        background-color: #bbb;
+    }
+
+    .menu-button:active {
+        background-color: #aaa;
+        transform: scale(0.98);
     }
 }
+
