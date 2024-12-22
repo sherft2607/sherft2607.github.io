@@ -1,4 +1,5 @@
 /* General Styles */
+
 body {
     background-color: #121212;
     font-family: 'Product Sans', sans-serif;
@@ -24,7 +25,7 @@ nav {
 
 .name {
     font-family: 'Product Sans', sans-serif;
-    font-size: 2em; /* Adjusted size for consistency */
+    font-size: 2.25em; /* Adjusted size for consistency */
 }
 
 ul {
@@ -46,7 +47,7 @@ a {
     display: block;
     border-radius: 5px;
     transition: background-color 0.3s, padding-left 0.3s;
-    font-size: 1.2em; /* Increased font size for consistency */
+    font-size: 1.5em; /* Increased font size for consistency */
 }
 
 a:hover {
@@ -198,7 +199,7 @@ main.resume {
 }
 
 .text-content h1 {
-    font-size: 2em;
+    font-size: 1.5em;
     margin-bottom: 10px;
 }
 
@@ -249,3 +250,8 @@ main.resume {
         aspect-ratio: 8.5 / 11; /* Maintain aspect ratio for 8.5 x 11 size */
     }
 }
+
+* {
+    box-sizing: border-box;
+}
+
