@@ -247,6 +247,16 @@ main.about {
     .image-container {
         margin-bottom: 20px;
     }
+
+    
+    .text-content {
+        flex: none;
+    }
+
+    .contact-button {
+        margin-left: 0;
+        text-align: center;
+    }
 }
 
 /* Contact Modal */
