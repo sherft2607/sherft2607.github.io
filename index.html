@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shandon Herft - Portfolio</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Product+Sans&display=swap">
+    <style>
+        /* --- GLOBAL STYLES --- */
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh; 
+            font-family: 'Product Sans', sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+            padding-top: 60px;
+        }
+
+        /* --- BACKGROUND ANIMATION CANVAS --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Deep Earthy Gradient: Charcoal to Dark Forest */
+            background: linear-gradient(135deg, #1c1c1c 0%, #262b26 100%);
+            z-index: -1; /* Places it behind all content */
+            pointer-events: none; /* Allows clicking through to content */
+        }
+
+        /* --- MODERN HEADER & NAV --- */
+        header {
+            width: 100%;
+            border-bottom: 1px solid rgba(163, 197, 133, 0.1); /* Sage Green border */
+            position: fixed; 
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: rgba(28, 28, 28, 0.9); /* Dark background match */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            color: #fff;
+            padding: 0 40px; 
+            max-width: 1400px; 
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .name {
+            /* Adjust this value (e.g. 3em for larger, 1.8em for smaller) */
+            font-size: 2em; 
+            font-weight: 700; 
+            letter-spacing: normal; 
+        }
+
+        .name a {
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.3s;
+        }
+        .name a:hover {
+            color: #A3C585; /* Sage Green Accent */
+            opacity: 1;
+        }
+
+        /* Navigation List */
+        header ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 40px; 
+        }
+
+        header li {
+            margin: 0; 
+        }
+
+        header a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7); 
+            padding: 5px 0;
+            display: block;
+            font-size: 1.2em; 
+            font-weight: 500;
+            letter-spacing: 0.05em; 
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        /* Modern Underline Animation */
+        header a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #A3C585; /* Sage Green Accent */
+            transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        header a:hover, header a.active {
+            color: #A3C585; /* Sage Green Accent */
+            background-color: transparent; 
+            padding-left: 0; 
+        }
+
+        header a:hover::after, header a.active::after {
+            width: 100%;
+        }
+
+        /* --- MOBILE MENU BUTTON (HAMBURGER) --- */
+        .menu-button {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1100;
+        }
+
+        .menu-button span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #fff;
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-origin: left center;
+        }
+
+        .menu-button.active span:nth-child(1) {
+            transform: rotate(45deg);
+            width: 31px;
+            top: -1px;
+            position: relative;
+            background-color: #A3C585; /* Green Accent */
+        }
+
+        .menu-button.active span:nth-child(2) {
+            opacity: 0;
+            width: 0;
+        }
+
+        .menu-button.active span:nth-child(3) {
+            transform: rotate(-45deg);
+            width: 31px;
+            top: 1px;
+            position: relative;
+            background-color: #A3C585; /* Green Accent */
+        }
+
+        .close-menu {
+            display: none;
+        }
+
+        /* --- PAGE SECTIONS LOGIC & ANIMATIONS --- */
+        .page-content {
+            display: none;
+            padding: 0;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-content.active-section {
+            display: block; 
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+                filter: blur(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .page-content.active-section .image-container,
+        .page-content.active-section .text-content h1,
+        .page-content.active-section .text-content p,
+        .page-content.active-section .contact-section,
+        .page-content.active-section .portfolio-container,
+        .page-content.active-section .portfolio-preview,
+        .page-content.active-section .resume-preview,
+        .page-content.active-section .resume-header,
+        .page-content.active-section .portfolio-header,
+        .page-content.active-section .projects-header,
+        .page-content.active-section .filter-container,
+        .page-content.active-section .projects-grid {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .page-content.active-section .image-container { animation-delay: 0.1s; }
+        .page-content.active-section .text-content h1 { animation-delay: 0.2s; }
+        .page-content.active-section .text-content p:nth-of-type(1) { animation-delay: 0.3s; }
+        .page-content.active-section .text-content p:nth-of-type(2) { animation-delay: 0.4s; }
+        .page-content.active-section .text-content p:nth-of-type(3) { animation-delay: 0.5s; }
+        .page-content.active-section .text-content p:nth-of-type(4) { animation-delay: 0.6s; }
+        .page-content.active-section .text-content p:nth-of-type(5) { animation-delay: 0.7s; }
+        .page-content.active-section .contact-section { animation-delay: 0.8s; }
+        
+        .page-content.active-section .resume-header,
+        .page-content.active-section .portfolio-header,
+        .page-content.active-section .projects-header { animation-delay: 0.2s; }
+
+        .page-content.active-section .filter-container { animation-delay: 0.3s; }
+        
+        .page-content.active-section .portfolio-preview,
+        .page-content.active-section .resume-preview,
+        .page-content.active-section .projects-grid { animation-delay: 0.4s; }
+
+        .page-content.portfolio.active-section {
+            display: block; 
+            min-height: calc(100vh - 100px); 
+        }
+
+        /* --- ABOUT SECTION STYLES --- */
+        .about {
+            width: 100%;
+        }
+
+        .introduction {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 40px;
+        }
+
+        .bio-container {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 100px;
+            align-items: center;
+        }
+
+        .image-container {
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            /* Removed grayscale filter */
+        }
+
+        .profile-image:hover {
+            transform: scale(1.02);
+            /* Removed filter modification on hover */
+        }
+
+        .text-content {
+            text-align: left;
+            padding-top: 10px;
+        }
+
+        .text-content h1 {
+            font-size: 2em; 
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 40px;
+            letter-spacing: normal;
+            color: #fff;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .text-content h1::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 60px;
+            height: 3px;
+            background-color: #A3C585; /* Sage Green Accent */
+        }
+
+        .text-content p {
+            font-size: 1.15rem;
+            line-height: 1.8; 
+            margin-bottom: 28px;
+            color: #e6e6dd; /* Warm Stone Grey */
+            font-weight: 300;
+            max-width: 750px;
+        }
+        
+        .text-content strong {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .text-content p a {
+            color: #A3C585; /* Sage Green Accent */
+            text-decoration: none;
+            border-bottom: 1px solid rgba(163, 197, 133, 0.3);
+            transition: border-color 0.3s;
+        }
+
+        .text-content p a:hover {
+            border-bottom-color: #A3C585;
+        }
+
+        /* --- CONTACT SECTION STYLES --- */
+        .contact-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            margin-bottom: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .contact-item .label {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #888;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .contact-item .value {
+            font-size: 1.1em;
+            color: #fff;
+            font-weight: 300;
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s ease;
+            word-break: break-all;
+        }
+        
+        .contact-item .value::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #A3C585; /* Sage Green Accent */
+            transition: width 0.3s ease;
+        }
+
+        .contact-item:hover .value {
+            color: #A3C585; /* Sage Green Accent */
+        }
+
+        .contact-item:hover .value::after {
+            width: 100%;
+        }
+
+        .contact-button {
+            display: inline-block;
+            margin-top: 25px;
+            background-color: #fff;
+            color: #1c1c1c !important; /* Dark text */
+            font-size: 1.1em;
+            text-decoration: none;
+            border: 2px solid #fff;
+            padding: 14px 40px;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.15);
+        }
+
+        .contact-button:hover {
+            background-color: transparent;
+            color: #A3C585 !important; /* Green Accent */
+            border-color: #A3C585;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(163, 197, 133, 0.2); /* Green Glow */
+            padding-left: 40px;
+        }
+
+        .contact-button.outline {
+            background-color: transparent;
+            color: #fff !important;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: none;
+            margin-top: 0;
+        }
+        
+        .contact-button.outline:hover {
+            background-color: rgba(163, 197, 133, 0.1);
+            color: #A3C585 !important;
+            border-color: #A3C585;
+            box-shadow: 0 5px 20px rgba(163, 197, 133, 0.2);
+        }
+
+        /* --- RESUME, PORTFOLIO & PROJECTS SECTION STYLES --- */
+        .resume, .portfolio-introduction, .projects {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 40px;
+            width: 100%;
+        }
+
+        .resume-header, .portfolio-header, .projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+        }
+
+        .resume-header h1, .portfolio-header h1, .projects-header h1 {
+            font-size: 2em; 
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: normal;
+            color: #fff;
+        }
+
+        /* --- PROJECTS HEADER UNDERLINE --- */
+        .projects-header h1 {
+            position: relative;
+            display: inline-block;
+        }
+
+        .projects-header h1::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 60px;
+            height: 3px;
+            background-color: #A3C585; /* Sage Green Accent */
+        }
+
+        .resume-preview {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto; 
+            aspect-ratio: 8.5 / 12;
+            background-color: #2a2a2a; 
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        
+        .resume-preview object {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .portfolio-introduction {
+            overflow: visible;
+        }
+
+        .portfolio-container {
+            display: block;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .portfolio-preview {
+            width: 100%;
+            margin-top: 0;
+            height: 85vh; 
+            background-color: #2a2a2a; 
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .portfolio-preview object {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        
+        .pdf-fallback {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px;
+            color: #ccc;
+        }
+
+        /* --- REDESIGNED PROJECTS SECTION --- */
+        .projects-header {
+            border-bottom: none; /* Removed border as filter container separates it */
+            margin-bottom: 20px;
+        }
+
+        /* NEW: Filter Styles */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #e6e6dd;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Product Sans', sans-serif;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(163, 197, 133, 0.1);
+            color: #A3C585;
+            border-color: #A3C585;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Improved responsiveness */
+            gap: 40px; /* Wider gap for cleaner look */
+        }
+
+        .project-card {
+            background-color: #252525; /* Slightly lighter earth tone */
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, opacity 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Equal height cards */
+            position: relative;
+        }
+
+        .project-card.hidden {
+            display: none; /* Hide filtered items */
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(163, 197, 133, 0.1); /* Subtle green glow */
+            border-color: rgba(163, 197, 133, 0.3);
+        }
+
+        .project-image-wrapper {
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-color: #333;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card:hover .project-image {
+            transform: scale(1.05); /* Zoom effect on hover */
+        }
+
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 60%, rgba(28, 28, 28, 0.8));
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .project-info {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .project-tag {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: rgba(163, 197, 133, 0.1); /* Green tint */
+            color: #A3C585;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .project-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            color: #fff;
+            line-height: 1.3;
+            transition: color 0.3s;
+        }
+        
+        .project-card:hover .project-title {
+            color: #A3C585;
+        }
+
+        .project-description {
+            font-size: 1em;
+            color: #c5c6c7;
+            line-height: 1.6;
+            margin: 0 0 20px 0;
+            flex-grow: 1;
+        }
+
+        .read-more-link {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #A3C585;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .project-card:hover .read-more-link {
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(163, 197, 133, 0.4);
+        }
+
+        /* --- MODAL STYLES (Shared & Extended) --- */
+        
+        /* New Animations */
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalContentZoom {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(28, 28, 28, 0.95); /* Very dark earthy background */
+            backdrop-filter: blur(8px);
+            overflow-y: auto; /* Allow scrolling for tall content */
+            
+            /* Apply Fade In */
+            animation: modalFadeIn 0.3s ease-out forwards;
+        }
+
+        /* Contact Form Modal specific adjustments */
+        #contactFormModal .modal-content {
+             height: 80%;
+             overflow: hidden;
+        }
+
+        /* Project Modal specific adjustments */
+        #projectModal .modal-content {
+            background-color: #1f2833;
+            margin: 5% auto;
+            padding: 0; /* Reset padding for image header */
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            color: #fff;
+            border: 1px solid rgba(163, 197, 133, 0.2);
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            
+            /* Apply Zoom/Slide */
+            animation: modalContentZoom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .modal-header-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            background-color: #333;
+            cursor: pointer; /* Clickable now */
+        }
+
+        .modal-body {
+            padding: 40px;
+        }
+
+        .modal-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+
+        .modal-tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .modal-tag {
+            background-color: rgba(163, 197, 133, 0.1);
+            color: #A3C585;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .modal-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #e6e6dd;
+        }
+
+        /* --- GALLERY STYLES --- */
+        .modal-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .gallery-item {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            background-color: #333;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        .close-modal {
+            color: #fff;
+            font-size: 40px;
+            font-weight: 300;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            cursor: pointer;
+            z-index: 2001;
+            background: rgba(0,0,0,0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            line-height: 1; /* Fix alignment */
+            padding-bottom: 4px; /* Optical center */
+        }
+
+        .close-modal:hover {
+            background: rgba(163, 197, 133, 0.2);
+            color: #A3C585;
+        }
+
+        /* Close Button for Contact Form (Previous Style) */
+        .close-contact {
+            color: #fff;
+            font-size: 36px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        /* --- LIGHTBOX STYLES --- */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(28, 28, 28, 0.95);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 0 50px rgba(163, 197, 133, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #fff;
+            font-size: 50px;
+            font-weight: 300;
+            cursor: pointer;
+            z-index: 3001;
+            transition: color 0.3s;
+            line-height: 1;
+        }
+
+        .lightbox-close:hover {
+            color: #A3C585;
+        }
+
+        /* NEW: Lightbox Navigation Arrows */
+        .lightbox-prev, .lightbox-next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -50px;
+            color: white;
+            font-weight: bold;
+            font-size: 40px;
+            transition: 0.3s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            -webkit-user-select: none;
+            z-index: 3002;
+            background-color: rgba(0,0,0,0.3); /* Slight background for visibility */
+        }
+
+        .lightbox-next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .lightbox-prev {
+            left: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .lightbox-prev:hover, .lightbox-next:hover {
+            background-color: rgba(163, 197, 133, 0.2);
+            color: #A3C585;
+        }
+
+        /* --- RESPONSIVE / MOBILE STYLES --- */
+        @media (max-width: 768px) {
+            nav {
+                padding: 10px 20px;
+            }
+
+            /* --- MODERN MOBILE MENU --- */
+            header ul {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(28, 28, 28, 0.98); /* Deep dark bg */
+                backdrop-filter: blur(20px);
+                justify-content: center; /* Vertical center */
+                align-items: flex-start; /* Horizontal Left */
+                padding-left: 60px; /* Big left margin */
+                z-index: 1050;
+                gap: 50px;
+                
+                /* Reset transform for container, use opacity for reveal */
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s;
+            }
+
+            header ul.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            header ul li {
+                /* Prepare for stagger animation */
+                opacity: 0;
+                transform: translateY(30px) skewY(5deg); /* Slight skew for excitement */
+                transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+                margin: 0;
+            }
+
+            header ul.active li {
+                opacity: 1;
+                transform: translateY(0) skewY(0);
+            }
+
+            /* Stagger delays */
+            header ul.active li:nth-child(1) { transition-delay: 0.1s; } /* Close btn */
+            header ul.active li:nth-child(2) { transition-delay: 0.2s; }
+            header ul.active li:nth-child(3) { transition-delay: 0.3s; }
+            header ul.active li:nth-child(4) { transition-delay: 0.4s; }
+            header ul.active li:nth-child(5) { transition-delay: 0.5s; }
+
+            header ul li a {
+                font-size: 3.5rem; /* Massive font */
+                font-weight: 800; /* Extra bold */
+                color: rgba(255, 255, 255, 0.2); /* Faded out initially */
+                text-transform: uppercase;
+                letter-spacing: -2px; /* Tight tracking */
+                padding: 0;
+                line-height: 1.1;
+                transition: all 0.3s ease;
+                display: block; /* Ensure full hit area if needed */
+            }
+
+            /* Active/Hover State */
+            header ul li a.active, 
+            header ul li a:hover {
+                color: #A3C585;
+                padding-left: 20px; /* Shift right */
+                text-shadow: 0 0 30px rgba(163, 197, 133, 0.4); /* Green Glow */
+            }
+
+            /* Remove old underline */
+            header ul li a::after {
+                display: none;
+            }
+
+            .close-menu { display: none !important; }
+            .menu-button { display: flex; }
+
+            .introduction { padding: 30px 20px; }
+            .bio-container { grid-template-columns: 1fr; gap: 40px; }
+            .image-container { margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto; }
+            .text-content h1 { font-size: 2em; text-align: center; margin-bottom: 30px; }
+            .text-content h1::after { left: 50%; transform: translateX(-50%); }
+
+            .contact-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 40px 20px;
+                text-align: left;
+                margin-bottom: 40px;
+            }
+
+            .contact-item:nth-child(1) { grid-column: 1; grid-row: 1; }
+            .contact-item:nth-child(2) { grid-column: 1; grid-row: 2; }
+            .contact-item:nth-child(3) { grid-column: 2; grid-row: 1; }
+            .contact-item:nth-child(4) { grid-column: 2; grid-row: 2; }
+
+            .page-content.portfolio.active-section { display: block; padding: 0; }
+            .portfolio-introduction { padding: 30px 20px; }
+            .portfolio-container { flex-direction: column; }
+            .portfolio-preview { height: 80vh; }
+            .portfolio iframe { height: 500px; }
+
+            .resume { padding: 30px 20px; }
+            .projects { padding: 30px 20px; }
+
+            /* REDESIGNED MOBILE HEADER LAYOUT */
+            .projects-header {
+                text-align: left;
+                margin-bottom: 20px;
+            }
+
+            /* Resume and Portfolio headers: Side by side */
+            .resume-header, .portfolio-header {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+                text-align: left;
+            }
+            
+            .resume-header h1, .portfolio-header h1, .projects-header h1 {
+                font-size: 2em; /* Matches ABOUT header size */
+                margin-bottom: 0;
+                line-height: 1; /* Help with vertical alignment if text wraps */
+            }
+            
+            .contact-button.outline {
+                padding: 14px 40px; /* Restored to desktop padding */
+                font-size: 1.1em; /* Restored to desktop font size */
+                margin-top: 0;
+                white-space: nowrap; /* Prevent button text breaking */
+            }
+
+            .filter-container {
+                justify-content: flex-start;
+                overflow-x: visible; 
+                white-space: normal;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .filter-btn {
+                font-size: 0.85em;
+                padding: 8px 16px;
+                flex: 0 0 auto;
+            }
+
+            .modal-header-image { height: 250px; }
+            .modal-body { padding: 25px; }
+            .modal-title { font-size: 1.8em; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <header>
+        <nav>
+            <div class="name">
+                <a href="#" onclick="showPage('about'); return false;">Shandon Herft</a>
+            </div>
+            <button class="menu-button" onclick="toggleMenu()" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul id="nav-links">
+                <li class="close-menu"><span onclick="toggleMenu()" aria-label="Close Menu">&times;</span></li>
+                <li><a href="#" onclick="showPage('about'); return false;" class="nav-link active" data-target="about">ABOUT</a></li>
+                
+                <li style="display: none !important;"><a href="#" onclick="showPage('projects'); return false;" class="nav-link" data-target="projects">PROJECTS</a></li>
+                
+                <li><a href="#" onclick="showPage('resume'); return false;" class="nav-link" data-target="resume">RESUME</a></li>
+                <li><a href="#" onclick="showPage('portfolio'); return false;" class="nav-link" data-target="portfolio">PORTFOLIO</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="about" class="page-content about active-section">
+        <div class="introduction">
+            <div class="bio-container">
+                <div class="image-container">
+                    <img src="headshot.jpg" alt="Shandon Jude Herft" class="profile-image" onerror="this.src='https://placehold.co/400x400/222/fff?text=No+Image'">
+                </div>
+                <div class="text-content">
+                    <h1>ABOUT</h1>
+                    <p>
+                        Shandon Jude Herft is a Computational Designer based in New York City. He currently works at <a href="https://www.thorntontomasetti.com/core-studio" target="_blank">Thornton Tomasetti’s CORE studio</a> as part of the CORE Modeling Group. He specializes in leveraging advanced computational and BIM methodologies for high-complexity projects.
+                    </p>
+                    
+                    <p>
+                        Shandon’s portfolio includes contributions to over ten major projects, ranging from supertall skyscrapers and international airports to major league sports venues and cultural institutions.
+                    </p>
+                    
+                    <p>
+                        Shandon holds a <a href="https://www.architecture.cmu.edu/computational-design" target="_blank">Master of Science in Computational Design</a> from <a href="https://www.cmu.edu/" target="_blank">Carnegie Mellon University</a>. Prior to CMU, he graduated in 2023 with a <a href="https://arch.iit.edu/" target="_blank">Bachelor's in Architecture</a> and a <a href="https://www.iit.edu/academics/programs/architecture-barch-construction-engineering-and-management-meng" target="_blank">Master's in Construction Management</a> from <a href="https://www.iit.edu/" target="_blank">Illinois Institute of Technology</a>.
+                    </p>
+                    
+                    <p>
+                        His academic interests include Robotics and Virtual Reality. His <a href="https://kilthub.cmu.edu/articles/thesis/JointLab_A_VR_Framework_for_Early_Robotics_Education_in_Architectural_Fabrication/29251010?backTo=/collections/Master_of_Computational_Design/5279693" target="_blank">thesis</a> focused on developing a bidirectional interaction framework that connects Grasshopper, RobotStudio, Unity, and the Meta Quest 3. Shandon has previously worked with renowned architecture firms, including <a href="https://www.kpf.com/" target="_blank">KPF</a>, <a href="https://www.gensler.com/" target="_blank">Gensler</a>, <a href="https://palma.global/" target="_blank">PALMA</a>, and <a href="https://www.sobha.com/" target="_blank">SOBHA</a>.
+                    </p>
+                    
+                    <p>
+                        Shandon is usually learning something new or logging a new experience. He’s currently working his way through the <a href="https://ossu.firebaseapp.com/#/" target="_blank">OSSU Computer Science</a> curriculum, with a focus on machine learning, while also streaming on <a href="https://www.twitch.tv/shaz_plays" target="_blank">Twitch</a>. You might also catch him on the football field, hitting local hiking trails, exploring the city's food scene, or curating his favorite films on <a href="https://letterboxd.com/shandonherft/" target="_blank">Letterboxd</a>.
+                    </p>
+                
+                    <div class="contact-section">
+                        <div class="contact-grid">
+                            <a href="mailto:sherft@andrew.cmu.edu" class="contact-item">
+                                <span class="label">Email</span>
+                                <span class="value">sherft@andrew.cmu.edu</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/shandonherft/" target="_blank" class="contact-item">
+                                <span class="label">LinkedIn</span>
+                                <span class="value">shandonherft</span>
+                            </a>
+                            <a href="https://github.com/sherft2607" target="_blank" class="contact-item">
+                                <span class="label">GitHub</span>
+                                <span class="value">sherft2607</span>
+                            </a>
+                            <div class="contact-item" onclick="openContactForm()">
+                                <span class="label">Contact</span>
+                                <span class="value" style="border-bottom: 1px dashed rgba(163, 197, 133, 0.5);">Form</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="page-content projects" style="display: none !important;">
+        <div class="projects-header">
+            <h1>PROJECTS</h1>
+        </div>
+
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all" onclick="filterProjects('all')">All</button>
+            <button class="filter-btn" data-filter="architecture" onclick="filterProjects('architecture')">Architecture</button>
+            <button class="filter-btn" data-filter="computational" onclick="filterProjects('computational')">Computational Design</button>
+            <button class="filter-btn" data-filter="college" onclick="filterProjects('college')">College</button>
+            <button class="filter-btn" data-filter="work" onclick="filterProjects('work')">Work</button>
+        </div>
+        
+        <div class="projects-grid">
+            <div class="project-card" onclick="openProject('robotics')" data-category="computational college">
+                <div class="project-image-wrapper">
+                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/333/fff?text=Robotic+Fabrication'); background-size: cover; background-position: center;"></div>
+                    <div class="project-overlay"></div>
+                </div>
+                <div class="project-info">
+                    <div class="project-tags">
+                        <span class="project-tag">Robotics</span>
+                        <span class="project-tag">College</span>
+                    </div>
+                    <h3 class="project-title">Robotic Fabrication</h3>
+                    <p class="project-description">Exploration of additive manufacturing techniques using KUKA robots.</p>
+                    <div class="read-more-link">View Project &rarr;</div>
+                </div>
+            </div>
+
+            <div class="project-card" onclick="openProject('vr')" data-category="computational college">
+                <div class="project-image-wrapper">
+                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/444/fff?text=VR+Interface'); background-size: cover; background-position: center;"></div>
+                    <div class="project-overlay"></div>
+                </div>
+                <div class="project-info">
+                    <div class="project-tags">
+                        <span class="project-tag">VR</span>
+                        <span class="project-tag">College</span>
+                    </div>
+                    <h3 class="project-title">VR Interface</h3>
+                    <p class="project-description">A custom Unity-based interface for real-time interaction with architectural geometry.</p>
+                    <div class="read-more-link">View Project &rarr;</div>
+                </div>
+            </div>
+
+            <div class="project-card" onclick="openProject('pavilion')" data-category="architecture computational college">
+                <div class="project-image-wrapper">
+                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/555/fff?text=Parametric+Pavilion'); background-size: cover; background-position: center;"></div>
+                    <div class="project-overlay"></div>
+                </div>
+                <div class="project-info">
+                    <div class="project-tags">
+                        <span class="project-tag">Architecture</span>
+                        <span class="project-tag">College</span>
+                    </div>
+                    <h3 class="project-title">Parametric Pavilion</h3>
+                    <p class="project-description">Computational design study focusing on structural optimization.</p>
+                    <div class="read-more-link">View Project &rarr;</div>
+                </div>
+            </div>
+
+            <div class="project-card" onclick="openProject('worktower')" data-category="architecture work">
+                <div class="project-image-wrapper">
+                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/222/fff?text=High-Rise+Tower'); background-size: cover; background-position: center;"></div>
+                    <div class="project-overlay"></div>
+                </div>
+                <div class="project-info">
+                    <div class="project-tags">
+                        <span class="project-tag">Architecture</span>
+                        <span class="project-tag">Work</span>
+                    </div>
+                    <h3 class="project-title">High-Rise Tower</h3>
+                    <p class="project-description">Professional commercial development project focusing on sustainable facade systems.</p>
+                    <div class="read-more-link">View Project &rarr;</div>
+                </div>
+            </div>
+
+             <div class="project-card" onclick="openProject('urban')" data-category="computational work">
+                <div class="project-image-wrapper">
+                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/111/fff?text=Generative+Urbanism'); background-size: cover; background-position: center;"></div>
+                    <div class="project-overlay"></div>
+                </div>
+                <div class="project-info">
+                    <div class="project-tags">
+                        <span class="project-tag">Computational</span>
+                        <span class="project-tag">Work</span>
+                    </div>
+                    <h3 class="project-title">Generative Urban Planning</h3>
+                    <p class="project-description">AI-driven urban layout optimization for mixed-use developments.</p>
+                    <div class="read-more-link">View Project &rarr;</div>
+                </div>
+            </div>
+
+             <div class="project-card" onclick="openProject('housing')" data-category="architecture college">
+                <div class="project-image-wrapper">
+                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/000/fff?text=Sustainable+Housing'); background-size: cover; background-position: center;"></div>
+                    <div class="project-overlay"></div>
+                </div>
+                <div class="project-info">
+                    <div class="project-tags">
+                        <span class="project-tag">Architecture</span>
+                        <span class="project-tag">College</span>
+                    </div>
+                    <h3 class="project-title">Sustainable Housing Complex</h3>
+                    <p class="project-description">Net-zero residential complex design focusing on community interaction.</p>
+                    <div class="read-more-link">View Project &rarr;</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="resume" class="page-content resume">
+        <div class="resume-header">
+            <h1>RESUME</h1>
+            <a href="resume.pdf" class="contact-button outline" target="_blank">Download PDF</a>
+        </div>
+
+        <div class="resume-preview">
+            <object data="resume.pdf#view=FitH" type="application/pdf">
+                <div class="pdf-fallback">
+                    <p>It appears you don't have a PDF plugin for this browser.</p>
+                    <a href="resume.pdf" class="contact-button" style="display: inline-block;">Download Resume</a>
+                </div>
+            </object>
+        </div>
+    </section>
+
+    <section id="portfolio" class="page-content portfolio">
+        <div class="portfolio-introduction">
+            <div class="portfolio-header">
+                <h1>PORTFOLIO</h1>
+                <a href="portfolio.pdf" class="contact-button outline" target="_blank">Download PDF</a>
+            </div>
+
+            <div class="portfolio-preview">
+                <object data="portfolio.pdf#view=FitH" type="application/pdf">
+                    <div class="pdf-fallback">
+                        <p>It appears you don't have a PDF plugin for this browser.</p>
+                        <a href="portfolio.pdf" class="contact-button" style="display: inline-block;">Download Portfolio</a>
+                    </div>
+                </object>
+            </div>
+        </div>
+    </section>
+
+    <div id="contactFormModal" class="modal" id="contactFormModal">
+        <div class="modal-content">
+            <span class="close-contact" onclick="closeContactForm()">&times;</span>
+            <iframe 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSdLDj5NPS_OaDxmgLoh6FxHwdmMFYD-MIBjSHbPXQippUePUg/viewform?embedded=true" 
+                width="100%" 
+                height="600" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+                Loading…
+            </iframe>
+        </div>
+    </div>
+
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeProjectModal()">&times;</span>
+            <img id="modalImg" src="" alt="Project Image" class="modal-header-image">
+            <div class="modal-body">
+                <div class="modal-tags" id="modalTags">
+                    </div>
+                <h2 class="modal-title" id="modalTitle">Project Title</h2>
+                <div class="modal-text" id="modalDesc">
+                    </div>
+                <div class="modal-gallery" id="modalGallery"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <a class="lightbox-prev" onclick="changeImage(-1)">&#10094;</a>
+        <a class="lightbox-next" onclick="changeImage(1)">&#10095;</a>
+        <img class="lightbox-content" id="lightboxImg">
+    </div>
+
+    <script>
+        // --- DATA: Project Details ---
+        const projectData = {
+            'robotics': {
+                title: "Robotic Fabrication & Additive Manufacturing",
+                image: "https://placehold.co/1200x600/333/fff?text=Robotic+Fabrication",
+                gallery: [
+                    "https://placehold.co/600x400/333/fff?text=Robotic+1",
+                    "https://placehold.co/600x400/444/fff?text=Robotic+2",
+                    "https://placehold.co/600x400/555/fff?text=Robotic+3",
+                    "https://placehold.co/600x400/666/fff?text=Robotic+4"
+                ],
+                tags: ["Robotics", "KUKA", "Python", "Fabrication"],
+                description: `
+                    <p>This project explores the intersection of computational design and robotic fabrication. Utilizing KUKA industrial robots, we developed custom end-effectors to extrude recycled plastic materials into complex, non-standard geometries that would be impossible with traditional manufacturing methods.</p>
+                    <p>The workflow involved developing a custom Grasshopper script to generate the toolpaths (G-code) directly from the 3D model, allowing for rapid prototyping and iteration. We focused on structural integrity and material efficiency, reducing waste by 40% compared to subtractive methods.</p>
+                    <p><strong>Tools Used:</strong> Rhino, Grasshopper, KUKA|prc, Python.</p>
+                `
+            },
+            'vr': {
+                title: "Immersive VR Architecture Interface",
+                image: "https://placehold.co/1200x600/444/fff?text=VR+Interface",
+                gallery: [
+                    "https://placehold.co/600x400/222/fff?text=Unity+Setup",
+                    "https://placehold.co/600x400/333/fff?text=In-Game+View",
+                    "https://placehold.co/600x400/444/fff?text=User+Testing"
+                ],
+                tags: ["Unity", "C#", "Oculus", "UI/UX"],
+                description: `
+                    <p>Bridging the gap between digital models and physical experience, this project created a custom VR interface using Unity and the Meta Quest headset. The goal was to allow clients and designers to step inside their models and manipulate geometry in real-time.</p>
+                    <p>I programmed bidirectional communication between Rhino/Grasshopper and Unity, meaning changes made in VR updated the parametric model instantly, and vice versa. This feedback loop enables a more intuitive design process.</p>
+                    <p><strong>Tools Used:</strong> Unity 3D, C#, Grasshopper, UDP Networking.</p>
+                `
+            },
+            'pavilion': {
+                title: "Parametric Pavilion Design",
+                image: "https://placehold.co/1200x600/555/fff?text=Parametric+Pavilion",
+                gallery: [
+                    "https://placehold.co/600x400/666/fff?text=Structure",
+                    "https://placehold.co/600x400/777/fff?text=Analysis",
+                    "https://placehold.co/600x400/888/fff?text=Render"
+                ],
+                tags: ["Grasshopper", "Karamba", "Optimization"],
+                description: `
+                    <p>A computational design study focusing on structural optimization and material efficiency for a large-span public pavilion. The form finding process was driven by physics simulations to minimize bending moments and material usage.</p>
+                    <p>Using Karamba3D for structural analysis, the mesh was iteratively optimized. The final design features a lightweight lattice structure that provides shade while maintaining an airy, open feel.</p>
+                    <p><strong>Tools Used:</strong> Rhino, Grasshopper, Karamba3D, Kangaroo.</p>
+                `
+            },
+            'worktower': {
+                title: "High-Rise Commercial Tower",
+                image: "https://placehold.co/1200x600/222/fff?text=High-Rise+Tower",
+                gallery: [
+                    "https://placehold.co/600x400/111/fff?text=Facade+Detail",
+                    "https://placehold.co/600x400/222/fff?text=Lobby+Render",
+                ],
+                tags: ["Architecture", "Professional Work", "Revit"],
+                description: `
+                    <p>A 40-story commercial tower designed during my time at [Firm Name]. The project emphasizes sustainable facade systems, utilizing high-performance glazing and automated shading devices to reduce solar gain.</p>
+                    <p>My role involved coordinating the BIM model between structural and MEP consultants and developing detailed drawing sets for the podium levels.</p>
+                    <p><strong>Tools Used:</strong> Revit, Enscape, Adobe Creative Suite.</p>
+                `
+            },
+            'urban': {
+                title: "Generative Urban Planning",
+                image: "https://placehold.co/1200x600/111/fff?text=Generative+Urbanism",
+                gallery: [
+                    "https://placehold.co/600x400/222/fff?text=Site+Plan",
+                    "https://placehold.co/600x400/333/fff?text=Traffic+Sim",
+                ],
+                tags: ["Computational Design", "Professional Work", "Python"],
+                description: `
+                    <p>This project utilized machine learning algorithms to optimize urban layouts for a new mixed-use district. The goal was to maximize solar exposure and pedestrian connectivity while minimizing wind tunnels and traffic congestion.</p>
+                    <p>By simulating thousands of iterations, we were able to identify the most efficient site plan that met all zoning requirements and client sustainability goals.</p>
+                    <p><strong>Tools Used:</strong> Rhino, Grasshopper, Python, scikit-learn.</p>
+                `
+            },
+            'housing': {
+                title: "Sustainable Housing Complex",
+                image: "https://placehold.co/1200x600/000/fff?text=Sustainable+Housing",
+                gallery: [
+                    "https://placehold.co/600x400/111/fff?text=Courtyard+View",
+                    "https://placehold.co/600x400/222/fff?text=Unit+Plan",
+                ],
+                tags: ["Architecture", "College", "Sustainability"],
+                description: `
+                    <p>A net-zero residential complex designed for a graduate studio. The project features passive cooling strategies, rainwater harvesting, and community gardens to promote social interaction and environmental responsibility.</p>
+                    <p>The design consists of modular units arranged around a central courtyard, creating a microclimate that reduces energy consumption for heating and cooling.</p>
+                    <p><strong>Tools Used:</strong> Revit, Lumion, Photoshop.</p>
+                `
+            }
+        };
+
+        // --- NAVIGATION LOGIC ---
+        function showPage(pageId) {
+            const sections = document.querySelectorAll('.page-content');
+            sections.forEach(section => {
+                section.classList.remove('active-section');
+            });
+
+            const activeSection = document.getElementById(pageId);
+            if (activeSection) {
+                activeSection.classList.add('active-section');
+            }
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.target === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            const menu = document.querySelector('nav ul');
+            const button = document.querySelector('.menu-button');
+            if (menu.classList.contains('active')) {
+                menu.classList.remove('active');
+                button.classList.remove('active');
+                button.setAttribute('aria-expanded', 'false');
+            }
+            
+            // --- NEW: Update URL history to support reload/back button ---
+            if (history.pushState) {
+                history.pushState(null, null, '#' + pageId);
+            } else {
+                window.location.hash = pageId;
+            }
+
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMenu() {
+            const menu = document.querySelector('nav ul');
+            const button = document.querySelector('.menu-button');
+            menu.classList.toggle('active');
+            button.classList.toggle('active');
+            
+            const isExpanded = menu.classList.contains('active');
+            button.setAttribute('aria-expanded', isExpanded);
+        }
+
+        document.querySelector('nav ul').addEventListener('click', (event) => {
+            if (event.target.tagName === 'A') {
+                const menu = document.querySelector('nav ul');
+                const button = document.querySelector('.menu-button');
+                menu.classList.remove('active');
+                button.classList.remove('active'); 
+                button.setAttribute('aria-expanded', 'false');
+            } else if (event.target === event.currentTarget) {
+                const menu = document.querySelector('nav ul');
+                const button = document.querySelector('.menu-button');
+                menu.classList.remove('active');
+                button.classList.remove('active'); 
+                button.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // --- FILTER LOGIC (MULTI-SELECT) ---
+        // State to track active filters
+        let activeFilters = new Set(['all']);
+
+        function filterProjects(category) {
+            // Handle Toggle Logic
+            if (category === 'all') {
+                activeFilters.clear();
+                activeFilters.add('all');
+            } else {
+                // Remove 'all' if specific filter selected
+                if (activeFilters.has('all')) {
+                    activeFilters.delete('all');
+                }
+
+                // Toggle Selection
+                if (activeFilters.has(category)) {
+                    activeFilters.delete(category);
+                } else {
+                    activeFilters.add(category);
+                }
+
+                // If nothing left, revert to 'all'
+                if (activeFilters.size === 0) {
+                    activeFilters.add('all');
+                }
+            }
+
+            // Update UI Buttons
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                const filter = btn.getAttribute('data-filter');
+                if (activeFilters.has(filter)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Filter Cards
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach(card => {
+                // If 'all' is active, show everything
+                if (activeFilters.has('all')) {
+                    card.classList.remove('hidden');
+                } else {
+                    const cardCats = card.getAttribute('data-category').split(' ');
+                    // Check Intersection (AND logic): Card must match ALL active filters
+                    const isMatch = Array.from(activeFilters).every(filter => cardCats.includes(filter));
+                    
+                    if (isMatch) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // --- MODAL LOGIC (Contact Form) ---
+        function openContactForm() {
+            const modal = document.getElementById("contactFormModal");
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeContactForm() {
+            const modal = document.getElementById("contactFormModal");
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        // --- LIGHTBOX LOGIC ---
+        let lightboxImages = [];
+        let currentLightboxIndex = 0;
+
+        function openLightbox(index) {
+            const lightbox = document.getElementById('lightbox');
+            currentLightboxIndex = index;
+            showLightboxImage();
+            
+            lightbox.style.display = 'flex';
+            setTimeout(() => {
+                lightbox.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            setTimeout(() => {
+                lightbox.style.display = 'none';
+                // Only re-enable scrolling if project modal isn't open
+                const projectModal = document.getElementById("projectModal");
+                if (projectModal.style.display !== "block") {
+                     document.body.style.overflow = 'auto';
+                }
+            }, 300);
+        }
+
+        function changeImage(n) {
+            currentLightboxIndex += n;
+            if (currentLightboxIndex >= lightboxImages.length) {
+                currentLightboxIndex = 0;
+            } else if (currentLightboxIndex < 0) {
+                currentLightboxIndex = lightboxImages.length - 1;
+            }
+            showLightboxImage();
+        }
+
+        function showLightboxImage() {
+            const img = document.getElementById('lightboxImg');
+            // Fade out
+            img.style.opacity = '0';
+            
+            setTimeout(() => {
+                img.src = lightboxImages[currentLightboxIndex];
+                // Fade in
+                img.onload = () => {
+                    img.style.opacity = '1';
+                }
+            }, 200);
+        }
+
+        // Swipe Support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const lightboxEl = document.getElementById('lightbox');
+        
+        lightboxEl.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        lightboxEl.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            // Threshold for swipe
+            if (touchEndX < touchStartX - 50) {
+                changeImage(1); // Swipe Left -> Next
+            }
+            if (touchEndX > touchStartX + 50) {
+                changeImage(-1); // Swipe Right -> Prev
+            }
+        }
+
+        // Keyboard Navigation for Lightbox
+        document.addEventListener('keydown', function(event) {
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox.style.display === 'flex') {
+                if (event.key === 'ArrowLeft') {
+                    changeImage(-1);
+                } else if (event.key === 'ArrowRight') {
+                    changeImage(1);
+                } else if (event.key === 'Escape') {
+                    closeLightbox();
+                }
+            }
+        });
+
+        // --- MODAL LOGIC (Projects) ---
+        function openProject(projectId) {
+            const data = projectData[projectId];
+            if (!data) return;
+
+            // Prepare Lightbox Data (Main Image + Gallery)
+            lightboxImages = [data.image, ...(data.gallery || [])];
+
+            // Populate Main Info
+            const mainImg = document.getElementById('modalImg');
+            mainImg.src = data.image; // Set main image
+            
+            // Click Main Image -> Open Lightbox at Index 0
+            mainImg.onclick = function() {
+                openLightbox(0);
+            }
+            mainImg.style.cursor = "pointer";
+
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalDesc').innerHTML = data.description;
+            
+            // Populate Tags
+            const tagsContainer = document.getElementById('modalTags');
+            tagsContainer.innerHTML = ''; // Clear previous
+            data.tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'modal-tag';
+                span.innerText = tag;
+                tagsContainer.appendChild(span);
+            });
+
+            // Populate Gallery
+            const galleryContainer = document.getElementById('modalGallery');
+            galleryContainer.innerHTML = ''; // Clear previous
+            
+            if (data.gallery && data.gallery.length > 0) {
+                // Combine main image + gallery images so user can switch back
+                const allImages = [data.image, ...data.gallery];
+                
+                // Start from index 1 because index 0 is main image
+                // But wait, we want to show all gallery images in the grid
+                // The gallery array in data doesn't include main image.
+                // So lightboxImages indices: 0 = Main, 1 = Gal[0], 2 = Gal[1]...
+                
+                data.gallery.forEach((imgSrc, index) => {
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    img.className = 'gallery-item';
+                    
+                    // The gallery images start at index 1 in our lightbox array
+                    const lightboxIndex = index + 1; 
+                    
+                    img.onclick = function() {
+                        openLightbox(lightboxIndex);
+                    };
+                    galleryContainer.appendChild(img);
+                });
+            }
+
+            // Show Modal
+            const modal = document.getElementById("projectModal");
+            modal.style.display = "block";
+            // Reset scroll position to top
+            const modalContent = modal.querySelector('.modal-content');
+            if (modalContent) {
+                // Not standard property on div, but useful for some implementations. 
+                // Better reset modal scrollTop if it has overflow
+                // The modal itself has overflow-y: auto
+                modal.scrollTop = 0; 
+            }
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeProjectModal() {
+            const modal = document.getElementById("projectModal");
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        // Close Modals on Outside Click
+        window.onclick = function(event) {
+            const contactModal = document.getElementById("contactFormModal");
+            const projectModal = document.getElementById("projectModal");
+            const lightbox = document.getElementById("lightbox"); // Add this
+            
+            if (event.target === contactModal) {
+                closeContactForm();
+            }
+            if (event.target === projectModal) {
+                closeProjectModal();
+            }
+            if (event.target === lightbox) { // Add this
+                closeLightbox();
+            }
+        }
+
+        // --- BACKGROUND ANIMATION ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let mouse = { x: null, y: null };
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                // Increased opacity to ensure visibility
+                ctx.fillStyle = 'rgba(163, 197, 133, 0.4)'; /* Sage Green particle */
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.floor(width * height / 15000); // Responsive count
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+                
+                // Connect particles to each other
+                particles.forEach(p2 => {
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 100) {
+                        // Increased opacity for lines
+                        ctx.strokeStyle = `rgba(163, 197, 133, ${0.15 * (1 - dist / 100)})`; /* Sage Green line */
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+
+                // Connect particles to mouse
+                if (mouse.x != null) {
+                    const dx = p.x - mouse.x;
+                    const dy = p.y - mouse.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 150) {
+                        // Increased opacity for mouse connection lines
+                        ctx.strokeStyle = `rgba(163, 197, 133, ${0.4 * (1 - dist / 150)})`; /* Bright Green mouse line */
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Initial Setup
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash && (hash === 'about' || hash === 'resume' || hash === 'portfolio' || hash === 'projects')) {
+                showPage(hash);
+            }
+        });
+    </script>
+</body>
+</html>
