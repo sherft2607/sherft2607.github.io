@@ -480,7 +480,8 @@
             overflow: hidden;
         }
         
-        .resume-preview object {
+        /* UPDATED: Changed from object to iframe styling */
+        .resume-preview iframe {
             width: 100%;
             height: 100%;
             border: none;
@@ -507,7 +508,8 @@
             overflow: hidden;
         }
 
-        .portfolio-preview object {
+        /* UPDATED: Changed from object to iframe styling */
+        .portfolio-preview iframe {
             width: 100%;
             height: 100%;
             border: none;
@@ -1033,7 +1035,9 @@
             .portfolio-introduction { padding: 30px 20px; }
             .portfolio-container { flex-direction: column; }
             .portfolio-preview { height: 80vh; }
-            .portfolio iframe { height: 500px; }
+            
+            /* FIXED: Use 100% height to fill the container and avoid grey box */
+            .portfolio-preview iframe { height: 100%; }
 
             .resume { padding: 30px 20px; }
             .projects { padding: 30px 20px; }
@@ -1282,16 +1286,18 @@
     <section id="resume" class="page-content resume">
         <div class="resume-header">
             <h1>RESUME</h1>
-            <a href="resume.pdf" class="contact-button outline" target="_blank">Download</a>
+            <a href="https://drive.google.com/file/d/1HJAJG_V1Mfjs4Sk6C92vnFYOIHWv4xKC/view?usp=sharing" class="contact-button outline" target="_blank">Download</a>
         </div>
 
         <div class="resume-preview">
-            <object data="resume.pdf#view=FitH" type="application/pdf">
-                <div class="pdf-fallback">
-                    <p>It appears you don't have a PDF plugin for this browser.</p>
-                    <a href="resume.pdf" class="contact-button" style="display: inline-block;">Download Resume</a>
-                </div>
-            </object>
+            <iframe 
+                src="https://drive.google.com/file/d/1HJAJG_V1Mfjs4Sk6C92vnFYOIHWv4xKC/preview" 
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+            </iframe>
         </div>
     </section>
 
@@ -1299,16 +1305,18 @@
         <div class="portfolio-introduction">
             <div class="portfolio-header">
                 <h1>PORTFOLIO</h1>
-                <a href="portfolio.pdf" class="contact-button outline" target="_blank">Download</a>
+                <a href="https://drive.google.com/file/d/1JSO5NSLD3_1wF3Knoppm0EsjwC1opkP6/view" class="contact-button outline" target="_blank">Download</a>
             </div>
 
             <div class="portfolio-preview">
-                <object data="portfolio.pdf#view=FitH" type="application/pdf">
-                    <div class="pdf-fallback">
-                        <p>It appears you don't have a PDF plugin for this browser.</p>
-                        <a href="portfolio.pdf" class="contact-button" style="display: inline-block;">Download Portfolio</a>
-                    </div>
-                </object>
+                <iframe 
+                    src="https://drive.google.com/file/d/1JSO5NSLD3_1wF3Knoppm0EsjwC1opkP6/preview" 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0" 
+                    marginheight="0" 
+                    marginwidth="0">
+                </iframe>
             </div>
         </div>
     </section>
@@ -1603,7 +1611,7 @@
                 // Only re-enable scrolling if project modal isn't open
                 const projectModal = document.getElementById("projectModal");
                 if (projectModal.style.display !== "block") {
-                     document.body.style.overflow = 'auto';
+                      document.body.style.overflow = 'auto';
                 }
             }, 300);
         }
