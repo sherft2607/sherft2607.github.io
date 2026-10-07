@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.shandonherft.twa",
+        "sha256_cert_fingerprints": ["52:1A:91:20:28:3D:DF:3F:F8:E8:31:A3:2D:32:B9:B5:6C:34:7E:48:EF:E5:6C:F0:99:C1:74:4A:A6:D8:4C:F4"]
+      }
+    }]
