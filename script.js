@@ -91,7 +91,16 @@ const projectData = {
 };
 
 // --- NAVIGATION LOGIC ---
-function showPage(pageId) {
+// Sections hidden with an inline display:none (e.g. PROJECTS while it's being
+// filled in) aren't routable, so a stale #projects link falls back to About.
+function isRoutablePage(pageId) {
+    const section = document.getElementById(pageId);
+    return !!section && section.classList.contains('page-content') && section.style.display !== 'none';
+}
+
+// historyMode: 'push' for nav clicks, 'replace' for the initial load,
+// 'none' when responding to Back/Forward (the URL is already correct)
+function showPage(pageId, historyMode = 'push') {
     const sections = document.querySelectorAll('.page-content');
     sections.forEach(section => {
         section.classList.remove('active-section');
@@ -118,11 +127,12 @@ function showPage(pageId) {
         button.setAttribute('aria-expanded', 'false');
     }
     
-    // --- NEW: Update URL history to support reload/back button ---
-    if (history.pushState) {
-        history.pushState(null, null, '#' + pageId);
-    } else {
-        window.location.hash = pageId;
+    // Record each section in history so reload and Back/Forward work
+    const newHash = '#' + pageId;
+    if (historyMode === 'push' && window.location.hash !== newHash) {
+        history.pushState(null, '', newHash);
+    } else if (historyMode === 'replace') {
+        history.replaceState(null, '', newHash);
     }
 
     window.scrollTo(0, 0);
@@ -154,64 +164,32 @@ document.querySelector('nav ul').addEventListener('click', (event) => {
     }
 });
 
-// --- FILTER LOGIC (MULTI-SELECT) ---
-// State to track active filters
-let activeFilters = new Set(['all']);
-
+// --- FILTER LOGIC ---
+// Single-select: each button shows the cards tagged with that category.
 function filterProjects(category) {
-    // Handle Toggle Logic
-    if (category === 'all') {
-        activeFilters.clear();
-        activeFilters.add('all');
-    } else {
-        // Remove 'all' if specific filter selected
-        if (activeFilters.has('all')) {
-            activeFilters.delete('all');
-        }
-
-        // Toggle Selection
-        if (activeFilters.has(category)) {
-            activeFilters.delete(category);
-        } else {
-            activeFilters.add(category);
-        }
-
-        // If nothing left, revert to 'all'
-        if (activeFilters.size === 0) {
-            activeFilters.add('all');
-        }
-    }
-
-    // Update UI Buttons
-    const buttons = document.querySelectorAll('.filter-btn');
-    buttons.forEach(btn => {
-        const filter = btn.getAttribute('data-filter');
-        if (activeFilters.has(filter)) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        const isActive = btn.dataset.filter === category;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive);
     });
 
-    // Filter Cards
-    const cards = document.querySelectorAll('.project-card');
-    cards.forEach(card => {
-        // If 'all' is active, show everything
-        if (activeFilters.has('all')) {
-            card.classList.remove('hidden');
-        } else {
-            const cardCats = card.getAttribute('data-category').split(' ');
-            // Check Intersection (AND logic): Card must match ALL active filters
-            const isMatch = Array.from(activeFilters).every(filter => cardCats.includes(filter));
-            
-            if (isMatch) {
-                card.classList.remove('hidden');
-            } else {
-                card.classList.add('hidden');
-            }
-        }
+    document.querySelectorAll('.project-card').forEach(card => {
+        const cardCats = card.dataset.category.split(' ');
+        card.classList.toggle('hidden', category !== 'all' && !cardCats.includes(category));
     });
 }
+
+// Make cards reachable and openable from the keyboard
+document.querySelectorAll('.project-card').forEach(card => {
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            card.click();
+        }
+    });
+});
 
 // --- MODAL LOGIC (Contact Form) ---
 function openContactForm() {
@@ -331,6 +309,9 @@ document.addEventListener('keydown', function(event) {
         } else if (event.key === 'Escape') {
             closeLightbox();
         }
+    } else if (event.key === 'Escape') {
+        if (document.getElementById('projectModal').style.display === 'block') closeProjectModal();
+        if (document.getElementById('contactFormModal').style.display === 'block') closeContactForm();
     }
 });
 
@@ -345,6 +326,7 @@ function openProject(projectId) {
     // Populate Main Info
     const mainImg = document.getElementById('modalImg');
     mainImg.src = data.image; // Set main image
+    mainImg.alt = data.title;
     
     // Click Main Image -> Open Lightbox at Index 0
     mainImg.onclick = function() {
@@ -370,17 +352,12 @@ function openProject(projectId) {
     galleryContainer.innerHTML = ''; // Clear previous
     
     if (data.gallery && data.gallery.length > 0) {
-        // Combine main image + gallery images so user can switch back
-        const allImages = [data.image, ...data.gallery];
-        
-        // Start from index 1 because index 0 is main image
-        // But wait, we want to show all gallery images in the grid
-        // The gallery array in data doesn't include main image.
-        // So lightboxImages indices: 0 = Main, 1 = Gal[0], 2 = Gal[1]...
-        
+        // lightboxImages indices: 0 = main image, 1 = gallery[0], 2 = gallery[1]...
         data.gallery.forEach((imgSrc, index) => {
             const img = document.createElement('img');
             img.src = imgSrc;
+            img.alt = `${data.title} image ${index + 1}`;
+            img.loading = 'lazy';
             img.className = 'gallery-item';
             
             // The gallery images start at index 1 in our lightbox array
@@ -396,14 +373,8 @@ function openProject(projectId) {
     // Show Modal
     const modal = document.getElementById("projectModal");
     modal.style.display = "block";
-    // Reset scroll position to top
-    const modalContent = modal.querySelector('.modal-content');
-    if (modalContent) {
-        // Not standard property on div, but useful for some implementations. 
-        // Better reset modal scrollTop if it has overflow
-        // The modal itself has overflow-y: auto
-        modal.scrollTop = 0; 
-    }
+    // Reset scroll position to top (the modal itself is the scroll container)
+    modal.scrollTop = 0;
     document.body.style.overflow = "hidden";
 }
 
@@ -431,23 +402,21 @@ window.onclick = function(event) {
 }
 
 // --- BACKGROUND ANIMATION ---
+// Particles are bucketed into a grid of LINK_DIST-sized cells so each one is
+// only compared against neighbours in adjacent cells instead of every other
+// particle. Lines are batched by opacity into a few paths, so a frame costs a
+// handful of stroke() calls rather than one per connection.
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
+const LINK_DIST = 100;
+const MOUSE_DIST = 150;
+const MAX_PARTICLES = 120;
+const ALPHA_BUCKETS = 6;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let width, height;
 let particles = [];
 let mouse = { x: null, y: null };
-
-function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
-
-window.addEventListener('mousemove', (e) => {
-    mouse.x = e.x;
-    mouse.y = e.y;
-});
+let animationId = null;
 
 class Particle {
     constructor() {
@@ -463,71 +432,177 @@ class Particle {
         if (this.x < 0 || this.x > width) this.vx *= -1;
         if (this.y < 0 || this.y > height) this.vy *= -1;
     }
-    draw() {
-        // Increased opacity to ensure visibility
-        ctx.fillStyle = 'rgba(163, 197, 133, 0.4)'; /* Sage Green particle */
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
 }
 
-function initParticles() {
-    particles = [];
-    const particleCount = Math.floor(width * height / 15000); // Responsive count
-    for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-    }
-}
-initParticles();
+function resize() {
+    // Cap the backing store at 2x so 3x phone screens don't render 9x the pixels
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-function animate() {
-    ctx.clearRect(0, 0, width, height);
-    
+    // Match the particle count to the new area without resetting the scene
+    // (mobile browsers fire resize whenever the address bar shows or hides)
+    const target = Math.min(Math.floor(width * height / 15000), MAX_PARTICLES);
+    while (particles.length < target) particles.push(new Particle());
+    particles.length = target;
     particles.forEach(p => {
-        p.update();
-        p.draw();
-        
-        // Connect particles to each other
-        particles.forEach(p2 => {
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < 100) {
-                // Increased opacity for lines
-                ctx.strokeStyle = `rgba(163, 197, 133, ${0.15 * (1 - dist / 100)})`; /* Sage Green line */
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(p2.x, p2.y);
-                ctx.stroke();
-            }
-        });
+        p.x = Math.min(p.x, width);
+        p.y = Math.min(p.y, height);
+    });
 
-        // Connect particles to mouse
-        if (mouse.x != null) {
+    if (reducedMotion.matches) drawFrame();
+}
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 100);
+});
+
+window.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+document.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+function drawFrame() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Build the spatial grid
+    const cols = Math.ceil(width / LINK_DIST) + 1;
+    const rows = Math.ceil(height / LINK_DIST) + 1;
+    const grid = new Array(cols * rows);
+    for (const p of particles) {
+        const cx = Math.min(Math.max(Math.floor(p.x / LINK_DIST), 0), cols - 1);
+        const cy = Math.min(Math.max(Math.floor(p.y / LINK_DIST), 0), rows - 1);
+        const key = cy * cols + cx;
+        (grid[key] || (grid[key] = [])).push(p);
+    }
+
+    const buckets = Array.from({ length: ALPHA_BUCKETS }, () => new Path2D());
+    const linkDistSq = LINK_DIST * LINK_DIST;
+
+    function link(a, b) {
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const distSq = dx * dx + dy * dy;
+        if (distSq >= linkDistSq) return;
+        const strength = 1 - Math.sqrt(distSq) / LINK_DIST;
+        const path = buckets[Math.min(Math.floor(strength * ALPHA_BUCKETS), ALPHA_BUCKETS - 1)];
+        path.moveTo(a.x, a.y);
+        path.lineTo(b.x, b.y);
+    }
+
+    // Visit each pair once: same cell (j > i), then the right, bottom-left,
+    // bottom and bottom-right neighbour cells
+    for (let cy = 0; cy < rows; cy++) {
+        for (let cx = 0; cx < cols; cx++) {
+            const cell = grid[cy * cols + cx];
+            if (!cell) continue;
+            for (let i = 0; i < cell.length; i++) {
+                for (let j = i + 1; j < cell.length; j++) link(cell[i], cell[j]);
+            }
+            const neighbours = [
+                cx + 1 < cols ? grid[cy * cols + cx + 1] : null,
+                cy + 1 < rows && cx > 0 ? grid[(cy + 1) * cols + cx - 1] : null,
+                cy + 1 < rows ? grid[(cy + 1) * cols + cx] : null,
+                cy + 1 < rows && cx + 1 < cols ? grid[(cy + 1) * cols + cx + 1] : null
+            ];
+            for (const other of neighbours) {
+                if (!other) continue;
+                for (const a of cell) {
+                    for (const b of other) link(a, b);
+                }
+            }
+        }
+    }
+
+    ctx.lineWidth = 1;
+    buckets.forEach((path, i) => {
+        ctx.strokeStyle = `rgba(163, 197, 133, ${0.28 * (i + 0.5) / ALPHA_BUCKETS})`; /* Sage Green line (each pair is drawn once now) */
+        ctx.stroke(path);
+    });
+
+    // Connect particles to mouse
+    if (mouse.x != null) {
+        const mouseDistSq = MOUSE_DIST * MOUSE_DIST;
+        for (const p of particles) {
             const dx = p.x - mouse.x;
             const dy = p.y - mouse.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < 150) {
-                // Increased opacity for mouse connection lines
-                ctx.strokeStyle = `rgba(163, 197, 133, ${0.4 * (1 - dist / 150)})`; /* Bright Green mouse line */
-                ctx.lineWidth = 1;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < mouseDistSq) {
+                ctx.strokeStyle = `rgba(163, 197, 133, ${0.4 * (1 - Math.sqrt(distSq) / MOUSE_DIST)})`; /* Bright Green mouse line */
                 ctx.beginPath();
                 ctx.moveTo(p.x, p.y);
                 ctx.lineTo(mouse.x, mouse.y);
                 ctx.stroke();
             }
         }
-    });
-    requestAnimationFrame(animate);
+    }
+
+    // Draw all particles as a single path
+    ctx.fillStyle = 'rgba(163, 197, 133, 0.4)'; /* Sage Green particle */
+    ctx.beginPath();
+    for (const p of particles) {
+        ctx.moveTo(p.x + p.size, p.y);
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    }
+    ctx.fill();
 }
-animate();
+
+function animate() {
+    particles.forEach(p => p.update());
+    drawFrame();
+    animationId = requestAnimationFrame(animate);
+}
+
+function startAnimation() {
+    if (animationId === null && !reducedMotion.matches && !document.hidden) animate();
+}
+
+function stopAnimation() {
+    if (animationId !== null) cancelAnimationFrame(animationId);
+    animationId = null;
+}
+
+// Don't burn battery in background tabs
+document.addEventListener('visibilitychange', () => {
+    document.hidden ? stopAnimation() : startAnimation();
+});
+reducedMotion.addEventListener('change', () => {
+    reducedMotion.matches ? (stopAnimation(), drawFrame()) : startAnimation();
+});
+
+resize();
+drawFrame();
+startAnimation();
+
+// Show the section named in the URL hash, defaulting to About
+function pageFromHash() {
+    const hash = window.location.hash.substring(1);
+    return isRoutablePage(hash) ? hash : 'about';
+}
+
+// Back/Forward (and hand-edited hashes) fire popstate; show that section
+// without pushing a new history entry
+window.addEventListener('popstate', () => {
+    closeProjectModal();
+    closeContactForm();
+    showPage(pageFromHash(), 'none');
+});
 
 // Initial Setup
 document.addEventListener('DOMContentLoaded', () => {
-    const hash = window.location.hash.substring(1);
-    if (hash && (hash === 'about' || hash === 'resume' || hash === 'portfolio' || hash === 'projects')) {
-        showPage(hash);
+    if (window.location.hash) {
+        showPage(pageFromHash(), 'replace');
+        // The browser jumps to the #section anchor after load, which tucks the
+        // heading under the fixed header; reset to the top once that happens
+        window.addEventListener('load', () => window.scrollTo(0, 0), { once: true });
     }
 });

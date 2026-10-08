@@ -587,7 +587,19 @@ header a:hover::after, header a.active::after {
     font-weight: 500;
 }
 
-.filter-btn:hover, .filter-btn.active {
+.filter-btn:focus-visible,
+.project-card:focus-visible {
+    outline: 2px solid #A3C585;
+    outline-offset: 3px;
+}
+
+.filter-btn.active {
+    background: #A3C585;
+    color: #1c1c1c;
+    border-color: #A3C585;
+}
+
+.filter-btn:not(.active):hover {
     background: rgba(163, 197, 133, 0.1);
     color: #A3C585;
     border-color: #A3C585;
@@ -595,8 +607,9 @@ header a:hover::after, header a.active::after {
 
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Improved responsiveness */
-    gap: 40px; /* Wider gap for cleaner look */
+    /* min() keeps a single column from overflowing on narrow phones */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 32px;
 }
 
 .project-card {
@@ -616,15 +629,27 @@ header a:hover::after, header a.active::after {
     display: none; /* Hide filtered items */
 }
 
-.project-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(163, 197, 133, 0.1); /* Subtle green glow */
-    border-color: rgba(163, 197, 133, 0.3);
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.project-card:not(.hidden) {
+    animation: cardIn 0.35s ease backwards;
+}
+
+/* Hover lift only on devices that can hover, so taps don't leave cards stuck raised */
+@media (hover: hover) {
+    .project-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(163, 197, 133, 0.1); /* Subtle green glow */
+        border-color: rgba(163, 197, 133, 0.3);
+    }
 }
 
 .project-image-wrapper {
     width: 100%;
-    height: 240px;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
     position: relative;
 }
@@ -751,8 +776,8 @@ header a:hover::after, header a.active::after {
 
 /* Project Modal specific adjustments */
 #projectModal .modal-content {
-    background-color: #1f2833;
-    margin: 5% auto;
+    background-color: #222622; /* Dark forest, matches the page gradient */
+    margin: 5vh auto;
     padding: 0; /* Reset padding for image header */
     border-radius: 12px;
     width: 90%;
@@ -775,6 +800,7 @@ header a:hover::after, header a.active::after {
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     background-color: #333;
+    display: block;
     cursor: pointer; /* Clickable now */
 }
 
@@ -785,14 +811,16 @@ header a:hover::after, header a.active::after {
 .modal-title {
     font-size: 2.5em;
     font-weight: 700;
-    margin: 0 0 10px 0;
+    margin: 0 0 20px 0;
     color: #fff;
+    line-height: 1.2;
 }
 
 .modal-tags {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .modal-tag {
@@ -1114,13 +1142,21 @@ header a:hover::after, header a.active::after {
         white-space: nowrap; /* Prevent button text breaking */
     }
 
+    /* Single swipeable row of filters instead of wrapping onto two lines */
     .filter-container {
-        justify-content: flex-start;
-        overflow-x: visible; 
-        white-space: normal;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
         gap: 10px;
+        margin: 0 -20px 30px;
+        padding: 0 20px 20px;
+        scrollbar-width: none;
     }
+
+    .filter-container::-webkit-scrollbar { display: none; }
+
+    .projects-grid { gap: 24px; }
+    .project-info { padding: 20px; }
+    .project-title { font-size: 1.25em; }
 
     .filter-btn {
         font-size: 0.85em;
@@ -1128,7 +1164,25 @@ header a:hover::after, header a.active::after {
         flex: 0 0 auto;
     }
 
-    .modal-header-image { height: 250px; }
-    .modal-body { padding: 25px; }
-    .modal-title { font-size: 1.8em; }
+    #projectModal .modal-content {
+        width: calc(100% - 24px);
+        margin: 12px auto;
+    }
+
+    .modal-header-image { height: auto; aspect-ratio: 16 / 10; }
+    .modal-body { padding: 24px 20px 28px; }
+    .modal-title { font-size: 1.6em; }
+    .modal-text { font-size: 1em; line-height: 1.7; }
+    .modal-gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .gallery-item { height: 100px; }
+
+    .close-modal {
+        top: 12px;
+        right: 12px;
+        width: 44px;
+        height: 44px;
+        font-size: 32px;
+    }
+
+    .lightbox-close { top: 16px; right: 20px; }
 }

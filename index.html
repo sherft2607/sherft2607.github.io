@@ -4,7 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shandon Herft</title>
+    <meta name="description" content="Computational Designer at Thornton Tomasetti CORE Studio">
+    <link rel="canonical" href="https://shandonherft.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Shandon Herft">
+    <meta property="og:title" content="Shandon Herft">
+    <meta property="og:description" content="Computational Designer at Thornton Tomasetti CORE Studio">
+    <meta property="og:url" content="https://shandonherft.com/">
+    <meta property="og:image" content="https://shandonherft.com/headshot.jpg">
+    <meta property="og:image:width" content="750">
+    <meta property="og:image:height" content="1000">
+    <meta property="og:image:alt" content="Portrait of Shandon Herft">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Shandon Herft">
+    <meta name="twitter:description" content="Computational Designer at Thornton Tomasetti CORE Studio">
+    <meta name="twitter:image" content="https://shandonherft.com/headshot.jpg">
+    <meta name="twitter:image:alt" content="Portrait of Shandon Herft">
+
     <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" as="image" href="headshot.webp" type="image/webp">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
@@ -27,9 +49,8 @@
             <ul id="nav-links">
                 <li class="close-menu"><span onclick="toggleMenu()" aria-label="Close Menu">&times;</span></li>
                 <li><a href="#" onclick="showPage('about'); return false;" class="nav-link active" data-target="about">ABOUT</a></li>
-                
+                <!-- PROJECTS hidden until real project content is ready -->
                 <li style="display: none !important;"><a href="#" onclick="showPage('projects'); return false;" class="nav-link" data-target="projects">PROJECTS</a></li>
-                
                 <li><a href="#" onclick="showPage('resume'); return false;" class="nav-link" data-target="resume">RESUME</a></li>
                 <li><a href="#" onclick="showPage('portfolio'); return false;" class="nav-link" data-target="portfolio">PORTFOLIO</a></li>
             </ul>
@@ -40,7 +61,10 @@
         <div class="introduction">
             <div class="bio-container">
                 <div class="image-container">
-                    <img src="headshot.jpg" alt="Shandon Jude Herft" class="profile-image" onerror="this.src='https://placehold.co/400x400/222/fff?text=No+Image'">
+                    <picture>
+                        <source srcset="headshot.webp" type="image/webp">
+                        <img src="headshot.jpg" alt="Shandon Jude Herft" class="profile-image" width="750" height="1000" fetchpriority="high" decoding="async">
+                    </picture>
                 </div>
                 <div class="text-content">
                     <h1>ABOUT</h1>
@@ -94,12 +118,12 @@
             <h1>PROJECTS</h1>
         </div>
 
-        <div class="filter-container">
-            <button class="filter-btn active" data-filter="all" onclick="filterProjects('all')">All</button>
-            <button class="filter-btn" data-filter="architecture" onclick="filterProjects('architecture')">Architecture</button>
-            <button class="filter-btn" data-filter="computational" onclick="filterProjects('computational')">Computational Design</button>
-            <button class="filter-btn" data-filter="college" onclick="filterProjects('college')">College</button>
-            <button class="filter-btn" data-filter="work" onclick="filterProjects('work')">Work</button>
+        <div class="filter-container" role="group" aria-label="Filter projects">
+            <button class="filter-btn active" data-filter="all" aria-pressed="true" onclick="filterProjects('all')">All</button>
+            <button class="filter-btn" data-filter="computational" aria-pressed="false" onclick="filterProjects('computational')">Computational</button>
+            <button class="filter-btn" data-filter="architecture" aria-pressed="false" onclick="filterProjects('architecture')">Architecture</button>
+            <button class="filter-btn" data-filter="college" aria-pressed="false" onclick="filterProjects('college')">College</button>
+            <button class="filter-btn" data-filter="work" aria-pressed="false" onclick="filterProjects('work')">Work</button>
         </div>
         
         <div class="projects-grid">
