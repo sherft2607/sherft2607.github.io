@@ -191,6 +191,39 @@ document.querySelectorAll('.project-card').forEach(card => {
     });
 });
 
+// --- RESUME: SKILL FILTERS ---
+// Highlight one category's badges and dim the rest; 'all' clears the highlight.
+const skillCloud = document.querySelector('.skill-cloud');
+
+document.querySelectorAll('.skill-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const category = btn.dataset.skillFilter;
+        document.querySelectorAll('.skill-filter').forEach(b => {
+            const isActive = b === btn;
+            b.classList.toggle('active', isActive);
+            b.setAttribute('aria-pressed', isActive);
+        });
+        skillCloud.classList.toggle('filtered', category !== 'all');
+        skillCloud.querySelectorAll('.skill-badge').forEach(badge => {
+            badge.classList.toggle('match', badge.dataset.skill === category);
+        });
+    });
+});
+
+// --- PORTFOLIO: SPREAD PREVIEWS ---
+// Thumbnails open the shared lightbox with full-size spreads from assets/portfolio/large/
+const spreadThumbs = document.querySelectorAll('.spread-thumb');
+const spreadImages = Array.from(spreadThumbs, thumb =>
+    thumb.querySelector('img').getAttribute('src').replace('assets/portfolio/', 'assets/portfolio/large/')
+);
+
+spreadThumbs.forEach(thumb => {
+    thumb.addEventListener('click', () => {
+        lightboxImages = spreadImages;
+        openLightbox(Number(thumb.dataset.index));
+    });
+});
+
 // --- MODAL LOGIC (Contact Form) ---
 function openContactForm() {
     const modal = document.getElementById("contactFormModal");
