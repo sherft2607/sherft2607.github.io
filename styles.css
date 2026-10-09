@@ -71,6 +71,27 @@ nav {
     opacity: 1;
 }
 
+/* Home: the name stays tucked away while the hero's big name is on screen,
+   then fades in once it scrolls under the header (toggled in script.js) */
+.name {
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+}
+
+header.name-tucked .name {
+    opacity: 0;
+    transform: translateY(8px);
+    visibility: hidden;
+    /* Stay visible until the fade-out finishes */
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s 0.4s;
+}
+
+/* First placement on load shouldn't animate */
+header.name-instant .name { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    header.name-tucked .name { transform: none; }
+}
+
 /* Navigation List */
 header ul {
     list-style: none;
@@ -731,6 +752,9 @@ header a:hover::after, header a.active::after {
     text-transform: uppercase;
     color: #A3C585; /* Sage Green Accent */
 }
+
+/* Name above the Resume/Portfolio titles; only shown on mobile, where the header is hidden */
+.page-owner { display: none; }
 
 .contact-button.primary {
     margin-top: 0;
@@ -1827,14 +1851,16 @@ header a:hover::after, header a.active::after {
 
 /* --- RESPONSIVE / MOBILE STYLES --- */
 @media (max-width: 768px) {
-    nav {
-        padding: 10px 20px;
-    }
-
-    /* --- MOBILE DOCK: header keeps just the name; links move to the pill --- */
-    header ul { display: none; }
+    /* --- MOBILE: no top header; the floating dock is the only navigation --- */
+    header { display: none; }
+    /* html carries the header offset (body's copy is 0 here); swap it for the notch inset */
+    html { padding-top: env(safe-area-inset-top); }
+    body { padding-top: 0; }
 
     .mobile-dock { display: flex; }
+
+    /* With no header, Resume and Portfolio name their owner above the title */
+    .page-owner { display: block; margin-bottom: 6px; }
 
     /* Clear the floating dock (48px pill + 16px offset + breathing room) */
     .page-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }

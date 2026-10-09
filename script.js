@@ -163,6 +163,27 @@ moveDockIndicator();
 document.fonts.ready.then(moveDockIndicator);
 window.addEventListener('resize', moveDockIndicator);
 
+// --- HEADER NAME REVEAL ---
+// Tucks the header name away while the hero's big name is on screen, and
+// fades it in once that scrolls under the header. On other pages the hero is
+// display:none (never intersecting), so the header name simply shows.
+const siteHeader = document.querySelector('header');
+const heroName = document.querySelector('.hero-name');
+if (siteHeader && heroName && 'IntersectionObserver' in window) {
+    let firstReport = true;
+    const heroObserver = new IntersectionObserver(([entry]) => {
+        // Snap into place on load; only fade on later changes
+        if (firstReport) siteHeader.classList.add('name-instant');
+        siteHeader.classList.toggle('name-tucked', entry.isIntersecting);
+        if (firstReport) {
+            void siteHeader.offsetWidth;
+            siteHeader.classList.remove('name-instant');
+            firstReport = false;
+        }
+    }, { rootMargin: `-${siteHeader.offsetHeight}px 0px 0px 0px` });
+    heroObserver.observe(heroName);
+}
+
 // --- FILTER LOGIC ---
 // Single-select: each button shows the cards tagged with that category.
 function filterProjects(category) {
