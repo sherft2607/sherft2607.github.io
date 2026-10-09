@@ -244,18 +244,80 @@ spreadThumbs.forEach(thumb => {
     });
 });
 
-// --- MODAL LOGIC (Contact Form) ---
-function openContactForm() {
-    const modal = document.getElementById("contactFormModal");
-    modal.style.display = "block";
-    document.body.style.overflow = "hidden";
+// --- MESSAGE PANEL (inline form, sent via Web3Forms) ---
+const msgToggle = document.getElementById('msgToggle');
+const msgPanel = document.getElementById('msgPanel');
+const msgForm = document.getElementById('msgForm');
+const msgStatus = document.getElementById('msgStatus');
+const msgSend = document.getElementById('msgSend');
+const msgSuccess = document.getElementById('msgSuccess');
+
+function setMessagePanel(open) {
+    // Hand focus back to the toggle before inert drops it from the closing panel
+    if (!open && msgPanel.contains(document.activeElement)) msgToggle.focus();
+    msgPanel.classList.toggle('open', open);
+    msgPanel.inert = !open;
+    msgToggle.setAttribute('aria-expanded', String(open));
+    if (open) {
+        // Wait for the expand transition before focusing so the scroll lands on the full panel
+        setTimeout(() => {
+            msgPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            const target = msgSuccess.hidden ? document.getElementById('msgName') : msgSuccess;
+            target.focus({ preventScroll: true });
+        }, 350);
+    }
 }
 
-function closeContactForm() {
-    const modal = document.getElementById("contactFormModal");
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
+function isMessagePanelOpen() {
+    return msgPanel.classList.contains('open');
 }
+
+msgToggle.addEventListener('click', () => setMessagePanel(!isMessagePanelOpen()));
+document.getElementById('msgClose').addEventListener('click', () => setMessagePanel(false));
+
+document.getElementById('msgAgain').addEventListener('click', () => {
+    msgForm.reset();
+    msgSuccess.hidden = true;
+    msgForm.hidden = false;
+    document.getElementById('msgName').focus();
+});
+
+msgForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!msgForm.reportValidity()) return;
+
+    const data = Object.fromEntries(new FormData(msgForm));
+    data.subject = `Portfolio · ${data.topic} — from ${data.name}`;
+
+    msgSend.disabled = true;
+    msgSend.classList.add('sending');
+    msgStatus.className = 'msg-status';
+    msgStatus.textContent = 'Sending…';
+
+    try {
+        const response = await fetch(msgForm.action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || response.statusText);
+
+        msgStatus.textContent = '';
+        document.getElementById('msgSuccessText').textContent =
+            `Thanks, ${data.name.split(' ')[0]} — I'll reply within a couple of days.`;
+        msgForm.hidden = true;
+        msgSuccess.hidden = false;
+        msgSuccess.focus();
+    } catch (error) {
+        // Keep what they typed and point them at email so the message isn't lost
+        msgStatus.className = 'msg-status error';
+        msgStatus.innerHTML = 'Couldn&rsquo;t send just now. Email me at <a href="mailto:shandonherft@gmail.com">shandonherft@gmail.com</a> instead.';
+    } finally {
+        msgSend.disabled = false;
+        msgSend.classList.remove('sending');
+    }
+});
 
 // --- EMAIL LINK ---
 // The mailto: link does nothing when the visitor has no default mail app,
@@ -364,7 +426,7 @@ document.addEventListener('keydown', function(event) {
         }
     } else if (event.key === 'Escape') {
         if (document.getElementById('projectModal').style.display === 'block') closeProjectModal();
-        if (document.getElementById('contactFormModal').style.display === 'block') closeContactForm();
+        else if (isMessagePanelOpen() && msgPanel.contains(document.activeElement)) setMessagePanel(false);
     }
 });
 
@@ -439,13 +501,9 @@ function closeProjectModal() {
 
 // Close Modals on Outside Click
 window.onclick = function(event) {
-    const contactModal = document.getElementById("contactFormModal");
     const projectModal = document.getElementById("projectModal");
     const lightbox = document.getElementById("lightbox"); // Add this
-    
-    if (event.target === contactModal) {
-        closeContactForm();
-    }
+
     if (event.target === projectModal) {
         closeProjectModal();
     }

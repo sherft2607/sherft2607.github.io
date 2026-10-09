@@ -175,10 +175,73 @@
                         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5a3 3 0 0 0-.8-2.3c2.8-.3 5.8-1.4 5.8-6.2a4.8 4.8 0 0 0-1.3-3.3 4.5 4.5 0 0 0-.1-3.3s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.1 5.4 2.4 5.4 2.4a4.5 4.5 0 0 0-.1 3.3A4.8 4.8 0 0 0 4 9c0 4.8 3 5.9 5.8 6.2a3 3 0 0 0-.8 2.3V21"/></svg>
                         <span>GitHub</span>
                     </a>
-                    <button type="button" class="contact-chip" onclick="openContactForm()">
+                    <button type="button" class="contact-chip" id="msgToggle" aria-expanded="false" aria-controls="msgPanel">
                         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>
-                        <span>Contact form</span>
+                        <span>Write a message</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- Message panel: a drafting-sheet form that expands below the contact chips, sent via Web3Forms -->
+            <div class="msg-panel" id="msgPanel" inert>
+                <div class="msg-panel-inner">
+                    <div class="msg-sheet">
+                        <div class="msg-titleblock">
+                            <span class="msg-ref">MSG-01</span>
+                            <span class="msg-owner">Shandon Herft</span>
+                            <button type="button" class="msg-close" id="msgClose" aria-label="Close message form">&times;</button>
+                        </div>
+
+                        <form class="msg-form" id="msgForm" action="https://api.web3forms.com/submit" method="POST">
+                            <input type="hidden" name="access_key" value="a2eb7c0f-bd2b-4712-bf1a-d52ea7cee1dd">
+                            <input type="hidden" name="subject" value="Portfolio message">
+                            <input type="hidden" name="from_name" value="shandonherft.com">
+                            <!-- Honeypot: hidden from people, filled in by bots; Web3Forms drops those submissions -->
+                            <input type="checkbox" name="botcheck" class="msg-botcheck" tabindex="-1" autocomplete="off">
+
+                            <fieldset class="msg-topics">
+                                <legend class="msg-label">What&rsquo;s this about?</legend>
+                                <div class="msg-pills">
+                                    <label class="msg-pill"><input type="radio" name="topic" value="Opportunity" checked><span>Opportunity</span></label>
+                                    <label class="msg-pill"><input type="radio" name="topic" value="Collaboration"><span>Collaboration</span></label>
+                                    <label class="msg-pill"><input type="radio" name="topic" value="Just saying hi"><span>Just saying hi</span></label>
+                                </div>
+                            </fieldset>
+
+                            <div class="msg-fields">
+                                <div class="msg-field">
+                                    <label class="msg-label" for="msgName">Name</label>
+                                    <input type="text" id="msgName" name="name" autocomplete="name" required>
+                                </div>
+                                <div class="msg-field">
+                                    <label class="msg-label" for="msgEmail">Email</label>
+                                    <input type="email" id="msgEmail" name="email" autocomplete="email" required>
+                                </div>
+                                <div class="msg-field msg-field-wide">
+                                    <label class="msg-label" for="msgBody">Message</label>
+                                    <textarea id="msgBody" name="message" rows="5" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="msg-footer">
+                                <p class="msg-status" id="msgStatus" role="status" aria-live="polite"></p>
+                                <button type="submit" class="msg-send" id="msgSend">
+                                    <span class="msg-send-label">Send</span>
+                                    <svg class="icon msg-send-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                                    <span class="msg-spinner" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="msg-success" id="msgSuccess" hidden tabindex="-1">
+                            <svg class="msg-check" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21"/><path d="M14 24.5l7 7 13-14"/></svg>
+                            <div>
+                                <p class="msg-success-title">Message sent.</p>
+                                <p class="msg-success-text" id="msgSuccessText">I&rsquo;ll reply within a couple of days.</p>
+                            </div>
+                            <button type="button" class="msg-again" id="msgAgain">Send another</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -630,21 +693,6 @@
             </ul>
         </div>
     </section>
-
-    <div id="contactFormModal" class="modal">
-        <div class="modal-content">
-            <span class="close-contact" onclick="closeContactForm()">&times;</span>
-            <iframe 
-                src="https://docs.google.com/forms/d/e/1FAIpQLSdLDj5NPS_OaDxmgLoh6FxHwdmMFYD-MIBjSHbPXQippUePUg/viewform?embedded=true" 
-                width="100%" 
-                height="600" 
-                frameborder="0" 
-                marginheight="0" 
-                marginwidth="0">
-                Loading…
-            </iframe>
-        </div>
-    </div>
 
     <div id="projectModal" class="modal">
         <div class="modal-content">

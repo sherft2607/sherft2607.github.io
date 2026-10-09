@@ -708,6 +708,337 @@ header a:hover::after, header a.active::after {
     text-decoration: underline;
 }
 
+/* --- MESSAGE PANEL (drafting-sheet form below the contact chips) --- */
+/* Grid rows animate 0fr -> 1fr so the panel expands to its natural height */
+.msg-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+}
+
+.msg-panel.open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+}
+
+.msg-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.msg-sheet {
+    --msg-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Consolas, monospace;
+    position: relative;
+    margin: 28px 0 8px;
+    padding: 0 32px 28px;
+    background: #222622;
+    border: 1px solid rgba(163, 197, 133, 0.25);
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+    transform: translateY(-12px);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.msg-panel.open .msg-sheet { transform: none; }
+
+/* Title block strip across the top, like a drawing sheet's header */
+.msg-titleblock {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 -32px 28px;
+    padding: 12px 16px 12px 32px;
+    border-bottom: 1px solid rgba(163, 197, 133, 0.2);
+    font-family: var(--msg-mono);
+    font-size: 0.72em;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.msg-ref {
+    padding: 3px 8px;
+    border: 1px solid rgba(163, 197, 133, 0.5);
+    border-radius: 3px;
+    color: #A3C585;
+}
+
+.msg-owner {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.msg-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+}
+
+.msg-close:hover {
+    color: #A3C585;
+    background: rgba(163, 197, 133, 0.12);
+}
+
+.msg-botcheck { display: none; }
+
+.msg-label {
+    display: block;
+    margin-bottom: 8px;
+    padding: 0;
+    font-family: var(--msg-mono);
+    font-size: 0.72em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    transition: color 0.2s;
+}
+
+/* Topic pills */
+.msg-topics {
+    margin: 0 0 28px;
+    padding: 0;
+    border: none;
+}
+
+.msg-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.msg-pill input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.msg-pill span {
+    display: inline-block;
+    padding: 9px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.92em;
+    cursor: pointer;
+    transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+
+.msg-pill:hover span { border-color: rgba(163, 197, 133, 0.6); }
+
+.msg-pill input:checked + span {
+    color: #1c1c1c;
+    background: #A3C585;
+    border-color: #A3C585;
+    font-weight: 600;
+}
+
+.msg-pill input:focus-visible + span {
+    outline: 2px solid #A3C585;
+    outline-offset: 3px;
+}
+
+/* Fields: underlined inputs, like annotation lines on a sheet */
+.msg-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 32px;
+}
+
+.msg-field-wide { grid-column: 1 / -1; }
+
+.msg-field input,
+.msg-field textarea {
+    width: 100%;
+    padding: 6px 0 10px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.05em;
+    transition: border-color 0.2s;
+}
+
+.msg-field textarea {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.6;
+}
+
+.msg-field input:focus,
+.msg-field textarea:focus {
+    outline: none;
+    border-bottom-color: #A3C585;
+}
+
+.msg-field:focus-within .msg-label { color: #A3C585; }
+
+.msg-field input:user-invalid,
+.msg-field textarea:user-invalid { border-bottom-color: #e0907e; }
+
+.msg-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    margin-top: 28px;
+}
+
+.msg-status {
+    margin: 0 auto 0 0;
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.msg-status.error { color: #e0907e; }
+
+.msg-status a {
+    color: #A3C585;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.msg-status a:hover { text-decoration: underline; }
+
+.msg-send {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    border: 1px solid #A3C585;
+    border-radius: 50px;
+    background: #A3C585;
+    color: #1c1c1c;
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(163, 197, 133, 0.2);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.msg-send:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(163, 197, 133, 0.3);
+}
+
+.msg-send:focus-visible {
+    outline: 2px solid #A3C585;
+    outline-offset: 3px;
+}
+
+.msg-send .msg-send-arrow { transition: transform 0.25s; }
+.msg-send:hover .msg-send-arrow { transform: translateX(3px); }
+
+/* Sending: label and arrow fade out, spinner takes their place */
+.msg-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border: 2px solid rgba(28, 28, 28, 0.25);
+    border-top-color: #1c1c1c;
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.msg-send.sending { cursor: progress; transform: none; }
+.msg-send.sending .msg-send-label,
+.msg-send.sending .msg-send-arrow { visibility: hidden; }
+.msg-send.sending .msg-spinner {
+    opacity: 1;
+    animation: msgSpin 0.8s linear infinite;
+}
+
+@keyframes msgSpin { to { transform: rotate(360deg); } }
+
+/* Success: the check draws itself as a single line */
+.msg-success {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 0;
+    outline: none;
+}
+
+.msg-success[hidden] { display: none; }
+
+.msg-check {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    fill: none;
+    stroke: #A3C585;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.msg-check circle {
+    stroke-dasharray: 132;
+    stroke-dashoffset: 132;
+    animation: msgDraw 0.6s ease-out forwards;
+}
+
+.msg-check path {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    animation: msgDraw 0.4s ease-out 0.5s forwards;
+}
+
+@keyframes msgDraw { to { stroke-dashoffset: 0; } }
+
+.msg-success-title {
+    margin: 0 0 4px;
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+.msg-success-text {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.msg-again {
+    margin-left: auto;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.92em;
+    cursor: pointer;
+    transition: color 0.25s, border-color 0.25s;
+}
+
+.msg-again:hover {
+    color: #A3C585;
+    border-color: #A3C585;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .msg-panel,
+    .msg-sheet { transition: opacity 0.2s ease; }
+    .msg-sheet { transform: none; }
+    .msg-send:hover,
+    .msg-send:hover .msg-send-arrow { transform: none; }
+    .msg-check circle,
+    .msg-check path { animation: none; stroke-dashoffset: 0; }
+}
+
 .contact-button {
     display: inline-block;
     margin-top: 25px;
@@ -1650,12 +1981,6 @@ header a:hover::after, header a.active::after {
     animation: modalFadeIn 0.3s ease-out forwards;
 }
 
-/* Contact Form Modal specific adjustments */
-#contactFormModal .modal-content {
-     height: 80%;
-     overflow: hidden;
-}
-
 /* Project Modal specific adjustments */
 #projectModal .modal-content {
     background-color: #222622; /* Dark forest, matches the page gradient */
@@ -1770,18 +2095,6 @@ header a:hover::after, header a.active::after {
 .close-modal:hover {
     background: rgba(163, 197, 133, 0.2);
     color: #A3C585;
-}
-
-/* Close Button for Contact Form (Previous Style) */
-.close-contact {
-    color: #fff;
-    font-size: 36px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    cursor: pointer;
-    z-index: 2001;
 }
 
 /* --- LIGHTBOX STYLES --- */
@@ -1955,6 +2268,14 @@ header a:hover::after, header a.active::after {
     .contact-row { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
     .contact-chip:first-child,
     .contact-chip:last-child { grid-column: 1 / -1; }
+    .msg-sheet { padding: 0 20px 24px; }
+    .msg-titleblock { margin: 0 -20px 24px; padding-left: 20px; }
+    .msg-fields { grid-template-columns: 1fr; gap: 24px; }
+    .msg-footer { flex-direction: column-reverse; align-items: stretch; gap: 14px; }
+    .msg-status { margin: 0; text-align: center; }
+    .msg-send { justify-content: center; }
+    .msg-success { flex-wrap: wrap; }
+    .msg-again { margin-left: 0; }
 
     .page-content.portfolio.active-section { display: block; padding: 0 0 calc(80px + env(safe-area-inset-bottom)); }
     .portfolio-introduction { padding: 30px 20px; }
