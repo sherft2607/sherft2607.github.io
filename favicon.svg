@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Dark forest tile with a faint sage edge -->
+  <rect x="0.5" y="0.5" width="63" height="63" rx="14.5" fill="#1f231f" stroke="#A3C585" stroke-opacity="0.35" stroke-width="1"/>
+  <!-- SH monogram: 6-unit orthogonal strokes, every edge on an even unit so 32px renders crisp -->
+  <path fill="#A3C585" d="M12 14h16v6H18v8h10v22H12v-6h10V34H12zM36 14h6v14h4V14h6v36h-6V34h-4v16h-6z"/>
+</svg>
