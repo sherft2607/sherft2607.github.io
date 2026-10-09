@@ -59,57 +59,129 @@
 
     <section id="about" class="page-content about active-section">
         <div class="introduction">
-            <div class="bio-container">
-                <div class="image-container">
+
+            <!-- HERO -->
+            <div class="hero">
+                <div class="hero-text">
+                    <p class="status-badge">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                        NYC <span class="dot-sep">&middot;</span> CORE studio @ Thornton Tomasetti
+                    </p>
+                    <h1 class="hero-name">Shandon Herft</h1>
+                    <p class="hero-statement">Computational designer turning complex geometry into buildable systems &mdash; through custom tools, BIM workflows and code for supertall towers, airports and stadiums.</p>
+                    <div class="hero-actions">
+                        <a href="#portfolio" onclick="showPage('portfolio'); return false;" class="contact-button primary">View Portfolio</a>
+                        <a href="#resume" onclick="showPage('resume'); return false;" class="contact-button outline">View Resume</a>
+                    </div>
+                </div>
+                <div class="hero-portrait">
                     <picture>
                         <source srcset="headshot.webp" type="image/webp">
-                        <img src="headshot.jpg" alt="Shandon Jude Herft" class="profile-image" width="750" height="1000" fetchpriority="high" decoding="async">
+                        <img src="headshot.jpg" alt="Portrait of Shandon Herft" class="profile-image" width="750" height="1000" fetchpriority="high" decoding="async">
                     </picture>
                 </div>
-                <div class="text-content">
-                    <h1>ABOUT</h1>
-                    <p>
-                        Shandon Jude Herft is a Computational Designer based in New York City. He currently works at <a href="https://www.thorntontomasetti.com/core-studio" target="_blank">Thornton Tomasetti’s CORE studio</a> as part of the CORE Modeling Group. He specializes in leveraging advanced computational and BIM methodologies for high-complexity projects.
-                    </p>
-                    
-                    <p>
-                        Shandon’s portfolio includes contributions to over ten major projects, ranging from supertall skyscrapers and international airports to major league sports venues and cultural institutions.
-                    </p>
-                    
-                    <p>
-                        Shandon holds a <a href="https://www.architecture.cmu.edu/computational-design" target="_blank">Master of Science in Computational Design</a> from <a href="https://www.cmu.edu/" target="_blank">Carnegie Mellon University</a>. Prior to CMU, he graduated in 2023 with a <a href="https://arch.iit.edu/" target="_blank">Bachelor's in Architecture</a> and a <a href="https://www.iit.edu/academics/programs/architecture-barch-construction-engineering-and-management-meng" target="_blank">Master's in Construction Management</a> from <a href="https://www.iit.edu/" target="_blank">Illinois Institute of Technology</a>.
-                    </p>
-                    
-                    <p>
-                        His academic interests include Robotics and Virtual Reality. His <a href="https://kilthub.cmu.edu/articles/thesis/JointLab_A_VR_Framework_for_Early_Robotics_Education_in_Architectural_Fabrication/29251010?backTo=/collections/Master_of_Computational_Design/5279693" target="_blank">thesis</a> focused on developing a bidirectional interaction framework that connects Grasshopper, RobotStudio, Unity, and the Meta Quest 3. Shandon has previously worked with renowned architecture firms, including <a href="https://www.kpf.com/" target="_blank">KPF</a>, <a href="https://www.gensler.com/" target="_blank">Gensler</a>, <a href="https://palma.global/" target="_blank">PALMA</a>, and <a href="https://www.sobha.com/" target="_blank">SOBHA</a>.
-                    </p>
-                    
-                    <p>
-                        Shandon is usually learning something new or logging a new experience. He’s currently working his way through the <a href="https://ossu.firebaseapp.com/#/" target="_blank">OSSU Computer Science</a> curriculum, with a focus on machine learning, while also streaming on <a href="https://www.twitch.tv/shaz_plays" target="_blank">Twitch</a>. You might also catch him on the football field, hitting local hiking trails, exploring the city's food scene, or curating his favorite films on <a href="https://letterboxd.com/shandonherft/" target="_blank">Letterboxd</a>.
-                    </p>
-                
-                    <div class="contact-section">
-                        <div class="contact-grid">
-                            <a href="mailto:shandonherft@gmail.com" class="contact-item" id="email-link">
-                                <span class="label">Email</span>
-                                <span class="value">shandonherft@gmail.com</span>
-                            </a>
-                            <a href="https://www.linkedin.com/in/shandonherft/" target="_blank" class="contact-item">
-                                <span class="label">LinkedIn</span>
-                                <span class="value">shandonherft</span>
-                            </a>
-                            <a href="https://github.com/sherft2607" target="_blank" class="contact-item">
-                                <span class="label">GitHub</span>
-                                <span class="value">sherft2607</span>
-                            </a>
-                            <div class="contact-item" onclick="openContactForm()">
-                                <span class="label">Contact</span>
-                                <span class="value" style="border-bottom: 1px dashed rgba(163, 197, 133, 0.5);">Form</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>                
             </div>
+
+            <!-- BIO + OFF THE CLOCK -->
+            <div class="about-row">
+                <div class="about-bio">
+                    <p class="eyebrow">About</p>
+                    <h2 class="about-title">Computation, BIM and the buildings in between.</h2>
+                    <p>
+                        I&rsquo;m a computational designer in the CORE Modeling Group at <a href="https://www.thorntontomasetti.com/core-studio" target="_blank" rel="noopener">Thornton Tomasetti&rsquo;s CORE studio</a>, where I apply advanced computational and BIM methods to high-complexity projects &mdash; from supertall skyscrapers and international airports to major league sports venues and cultural institutions.
+                    </p>
+                    <p>
+                        I hold a <a href="https://www.architecture.cmu.edu/computational-design" target="_blank" rel="noopener">Master of Science in Computational Design</a> from Carnegie Mellon, and a Bachelor&rsquo;s in Architecture and a Master&rsquo;s in Construction Management from Illinois Tech. Along the way I&rsquo;ve worked with KPF, Gensler, PALMA and SOBHA, and my research sits where robotics and virtual reality meet architecture.
+                    </p>
+                    <dl class="resume-stats about-stats">
+                        <div><dt>10+</dt><dd>major projects</dd></div>
+                        <div><dt>5</dt><dd>firms &amp; agencies</dd></div>
+                        <div><dt>3</dt><dd>degrees</dd></div>
+                    </dl>
+                    <ul class="tool-chips" aria-label="Core tools">
+                        <li class="skill-badge">Grasshopper</li>
+                        <li class="skill-badge">Rhino3D</li>
+                        <li class="skill-badge">Revit</li>
+                        <li class="skill-badge">C#</li>
+                        <li class="skill-badge">Python</li>
+                        <li class="skill-badge">Unity</li>
+                    </ul>
+                </div>
+
+                <aside class="off-clock" aria-labelledby="off-clock-title">
+                    <p class="eyebrow">Off the clock</p>
+                    <h3 id="off-clock-title">Usually learning something new.</h3>
+                    <ul class="off-clock-list">
+                        <li>
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5"/></svg>
+                            <span>Working through <a href="https://ossu.firebaseapp.com/#/" target="_blank" rel="noopener">OSSU Computer Science</a>, focused on machine learning</span>
+                        </li>
+                        <li>
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                            <span>Streaming on <a href="https://www.twitch.tv/shaz_plays" target="_blank" rel="noopener">Twitch</a></span>
+                        </li>
+                        <li>
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></svg>
+                            <span>Curating films on <a href="https://letterboxd.com/shandonherft/" target="_blank" rel="noopener">Letterboxd</a></span>
+                        </li>
+                        <li>
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5l4 2.9-1.5 4.6h-5L8 10.4z"/></svg>
+                            <span>On the football field, hitting local trails, or exploring the city&rsquo;s food scene</span>
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+
+            <!-- FEATURED WORK -->
+            <article class="featured-work">
+                <a class="featured-media" href="assets/Shandon-Herft-Portfolio.pdf#page=4" target="_blank" rel="noopener" aria-label="Open JointLab in the portfolio PDF">
+                    <img src="assets/portfolio/jointlab.webp" alt="JointLab portfolio spread" width="900" height="637" loading="lazy">
+                    <span class="cover-badge">Thesis</span>
+                </a>
+                <div class="featured-body">
+                    <p class="eyebrow">Featured work &middot; Carnegie Mellon</p>
+                    <h2>JointLab</h2>
+                    <p class="featured-subtitle">A VR framework for early robotics education in architectural fabrication.</p>
+                    <p>My thesis developed a bidirectional interaction framework connecting Grasshopper, RobotStudio, Unity and the Meta Quest 3 &mdash; bringing robotic fabrication into virtual reality as a hands-on way to learn.</p>
+                    <ul class="tool-chips" aria-label="Tools used">
+                        <li class="skill-badge">Grasshopper</li>
+                        <li class="skill-badge">RobotStudio</li>
+                        <li class="skill-badge">Unity</li>
+                        <li class="skill-badge">Meta Quest 3</li>
+                    </ul>
+                    <div class="featured-actions">
+                        <a href="https://kilthub.cmu.edu/articles/thesis/JointLab_A_VR_Framework_for_Early_Robotics_Education_in_Architectural_Fabrication/29251010" target="_blank" rel="noopener" class="contact-button primary">Read the thesis</a>
+                        <a href="#portfolio" onclick="showPage('portfolio'); return false;" class="text-link">See all work &rarr;</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CONTACT -->
+            <div class="contact-section">
+                <div class="contact-intro">
+                    <p class="eyebrow">Get in touch</p>
+                    <h2>Let&rsquo;s build something.</h2>
+                </div>
+                <div class="contact-row">
+                    <a href="mailto:shandonherft@gmail.com" class="contact-chip" id="email-link">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                        <span>shandonherft@gmail.com</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/shandonherft/" target="_blank" rel="noopener" class="contact-chip">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 11v6M8 7.5v.01M12 17v-6M12 13.5a2.5 2.5 0 0 1 5 0V17"/></svg>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://github.com/sherft2607" target="_blank" rel="noopener" class="contact-chip">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5a3 3 0 0 0-.8-2.3c2.8-.3 5.8-1.4 5.8-6.2a4.8 4.8 0 0 0-1.3-3.3 4.5 4.5 0 0 0-.1-3.3s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.1 5.4 2.4 5.4 2.4a4.5 4.5 0 0 0-.1 3.3A4.8 4.8 0 0 0 4 9c0 4.8 3 5.9 5.8 6.2a3 3 0 0 0-.8 2.3V21"/></svg>
+                        <span>GitHub</span>
+                    </a>
+                    <button type="button" class="contact-chip" onclick="openContactForm()">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>
+                        <span>Contact form</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </section>
 
