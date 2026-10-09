@@ -335,6 +335,27 @@ emailLink.addEventListener('click', () => {
     emailToastTimer = setTimeout(() => emailToast.classList.remove('show'), 6000);
 });
 
+// --- FOOTER CLOCK ---
+// Always New York time, whatever the visitor's timezone; EDT/EST follows daylight saving
+const nycTime = document.getElementById('nycTime');
+const nycFormat = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+    timeZoneName: 'short'
+});
+
+function updateNycTime() {
+    const now = new Date();
+    const parts = Object.fromEntries(nycFormat.formatToParts(now).map(p => [p.type, p.value]));
+    nycTime.textContent = `${parts.hour}:${parts.minute} ${parts.timeZoneName}`;
+    nycTime.dateTime = now.toISOString();
+}
+
+updateNycTime();
+setInterval(updateNycTime, 30000);
+
 // --- LIGHTBOX LOGIC ---
 let lightboxImages = [];
 let currentLightboxIndex = 0;
