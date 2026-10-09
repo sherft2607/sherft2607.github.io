@@ -119,53 +119,67 @@ header a:hover::after, header a.active::after {
     width: 100%;
 }
 
-/* --- MOBILE MENU BUTTON (HAMBURGER) --- */
-.menu-button {
+/* --- MOBILE DOCK (floating glass pill, enabled below 768px) --- */
+.mobile-dock {
     display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 21px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    z-index: 1100;
+    position: fixed;
+    left: 50%;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 1000;
+    align-items: center;
+    padding: 4px;
+    border-radius: 999px;
+    background-color: rgba(28, 28, 28, 0.72); /* Header tint, a touch lighter */
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgba(163, 197, 133, 0.18); /* Sage Green border */
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-.menu-button span {
-    display: block;
-    width: 100%;
-    height: 2px;
-    background-color: #fff;
-    border-radius: 2px;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    transform-origin: left center;
-}
-
-.menu-button.active span:nth-child(1) {
-    transform: rotate(45deg);
-    width: 31px;
-    top: -1px;
+.mobile-dock a {
     position: relative;
-    background-color: #A3C585; /* Green Accent */
+    z-index: 1;
+    padding: 10px 20px;
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 20px;
+    text-decoration: none;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.3s ease;
 }
 
-.menu-button.active span:nth-child(2) {
+.mobile-dock a.active { color: #fff; }
+
+.mobile-dock a:focus-visible {
+    outline: 2px solid #A3C585;
+    outline-offset: 2px;
+}
+
+/* Sage pill that slides under the active tab; script.js sets its width and offset */
+.dock-indicator {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    border-radius: 999px;
+    background-color: rgba(163, 197, 133, 0.2);
+    border: 1px solid rgba(163, 197, 133, 0.45);
     opacity: 0;
-    width: 0;
 }
 
-.menu-button.active span:nth-child(3) {
-    transform: rotate(-45deg);
-    width: 31px;
-    top: 1px;
-    position: relative;
-    background-color: #A3C585; /* Green Accent */
+/* Only animate once the indicator has been placed, so it doesn't slide in on load */
+.mobile-dock.ready .dock-indicator {
+    opacity: 1;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.close-menu {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+    .mobile-dock.ready .dock-indicator { transition: none; }
 }
 
 /* --- PAGE SECTIONS LOGIC & ANIMATIONS --- */
@@ -233,6 +247,7 @@ header a:hover::after, header a.active::after {
 .page-content.portfolio.active-section {
     display: block; 
     min-height: calc(100vh - 100px); 
+    min-height: calc(100dvh - 100px); /* Tracks mobile browser toolbars */
 }
 
 /* --- ABOUT SECTION STYLES --- */
@@ -1816,81 +1831,16 @@ header a:hover::after, header a.active::after {
         padding: 10px 20px;
     }
 
-    /* --- MODERN MOBILE MENU --- */
-    header ul {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(28, 28, 28, 0.98); /* Deep dark bg */
-        backdrop-filter: blur(20px);
-        justify-content: center; /* Vertical center */
-        align-items: flex-start; /* Horizontal Left */
-        padding-left: 60px; /* Big left margin */
-        z-index: 1050;
-        gap: 50px;
-        
-        /* Reset transform for container, use opacity for reveal */
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s;
-    }
+    /* --- MOBILE DOCK: header keeps just the name; links move to the pill --- */
+    header ul { display: none; }
 
-    header ul.active {
-        opacity: 1;
-        visibility: visible;
-    }
+    .mobile-dock { display: flex; }
 
-    header ul li {
-        /* Prepare for stagger animation */
-        opacity: 0;
-        transform: translateY(30px) skewY(5deg); /* Slight skew for excitement */
-        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-        margin: 0;
-    }
+    /* Clear the floating dock (48px pill + 16px offset + breathing room) */
+    .page-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
 
-    header ul.active li {
-        opacity: 1;
-        transform: translateY(0) skewY(0);
-    }
-
-    /* Stagger delays */
-    header ul.active li:nth-child(1) { transition-delay: 0.1s; } /* Close btn */
-    header ul.active li:nth-child(2) { transition-delay: 0.2s; }
-    header ul.active li:nth-child(3) { transition-delay: 0.3s; }
-    header ul.active li:nth-child(4) { transition-delay: 0.4s; }
-    header ul.active li:nth-child(5) { transition-delay: 0.5s; }
-
-    header ul li a {
-        font-size: 3rem; /* Massive font */
-        font-weight: 800; /* Extra bold */
-        color: rgba(255, 255, 255, 0.2); /* Faded out initially */
-        text-transform: uppercase;
-        letter-spacing: -2px; /* Tight tracking */
-        padding: 0;
-        line-height: 1.1;
-        transition: all 0.3s ease;
-        display: block; /* Ensure full hit area if needed */
-    }
-
-    /* Active/Hover State */
-    header ul li a.active, 
-    header ul li a:hover {
-        color: #A3C585;
-        padding-left: 20px; /* Shift right */
-        text-shadow: 0 0 30px rgba(163, 197, 133, 0.4); /* Green Glow */
-    }
-
-    /* Remove old underline */
-    header ul li a::after {
-        display: none;
-    }
-
-    .close-menu { display: none !important; }
-    .menu-button { display: flex; }
+    /* Lift the email toast above the dock */
+    .email-toast { bottom: calc(80px + env(safe-area-inset-bottom)); }
 
     .introduction { padding: 30px 20px; }
     .hero { padding-bottom: 48px; }
@@ -1908,7 +1858,7 @@ header a:hover::after, header a.active::after {
     .contact-chip:first-child,
     .contact-chip:last-child { grid-column: 1 / -1; }
 
-    .page-content.portfolio.active-section { display: block; padding: 0; }
+    .page-content.portfolio.active-section { display: block; padding: 0 0 calc(80px + env(safe-area-inset-bottom)); }
     .portfolio-introduction { padding: 30px 20px; }
 
     .resume-card { padding: 24px; }

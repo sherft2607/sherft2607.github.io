@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Shandon Herft</title>
     <meta name="description" content="Computational Designer at Thornton Tomasetti CORE Studio">
     <link rel="canonical" href="https://shandonherft.com/">
@@ -41,14 +41,8 @@
             <div class="name">
                 <a href="#" onclick="showPage('about'); return false;">Shandon Herft</a>
             </div>
-            <button class="menu-button" onclick="toggleMenu()" aria-label="Toggle Navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
             <ul id="nav-links">
-                <li class="close-menu"><span onclick="toggleMenu()" aria-label="Close Menu">&times;</span></li>
-                <li><a href="#" onclick="showPage('about'); return false;" class="nav-link active" data-target="about">ABOUT</a></li>
+                <li><a href="#" onclick="showPage('about'); return false;" class="nav-link active" data-target="about" aria-current="page">ABOUT</a></li>
                 <!-- PROJECTS hidden until real project content is ready -->
                 <li style="display: none !important;"><a href="#" onclick="showPage('projects'); return false;" class="nav-link" data-target="projects">PROJECTS</a></li>
                 <li><a href="#" onclick="showPage('resume'); return false;" class="nav-link" data-target="resume">RESUME</a></li>
@@ -56,6 +50,14 @@
             </ul>
         </nav>
     </header>
+
+    <!-- Mobile navigation: floating glass pill, shown below 768px in place of the header links -->
+    <nav class="mobile-dock" aria-label="Primary">
+        <span class="dock-indicator" aria-hidden="true"></span>
+        <a href="#about" onclick="showPage('about'); return false;" class="nav-link active" data-target="about" aria-current="page">About</a>
+        <a href="#resume" onclick="showPage('resume'); return false;" class="nav-link" data-target="resume">Resume</a>
+        <a href="#portfolio" onclick="showPage('portfolio'); return false;" class="nav-link" data-target="portfolio">Portfolio</a>
+    </nav>
 
     <section id="about" class="page-content about active-section">
         <div class="introduction">

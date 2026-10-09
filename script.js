@@ -114,19 +114,15 @@ function showPage(pageId, historyMode = 'push') {
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         link.classList.remove('active');
+        link.removeAttribute('aria-current');
         if (link.dataset.target === pageId) {
             link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
         }
     });
 
-    const menu = document.querySelector('nav ul');
-    const button = document.querySelector('.menu-button');
-    if (menu.classList.contains('active')) {
-        menu.classList.remove('active');
-        button.classList.remove('active');
-        button.setAttribute('aria-expanded', 'false');
-    }
-    
+    moveDockIndicator();
+
     // Record each section in history so reload and Back/Forward work
     const newHash = '#' + pageId;
     if (historyMode === 'push' && window.location.hash !== newHash) {
@@ -138,31 +134,34 @@ function showPage(pageId, historyMode = 'push') {
     window.scrollTo(0, 0);
 }
 
-function toggleMenu() {
-    const menu = document.querySelector('nav ul');
-    const button = document.querySelector('.menu-button');
-    menu.classList.toggle('active');
-    button.classList.toggle('active');
-    
-    const isExpanded = menu.classList.contains('active');
-    button.setAttribute('aria-expanded', isExpanded);
+// --- MOBILE DOCK ---
+// Slides the sage pill under the active tab. The dock is display:none on
+// desktop (zero width), so there's nothing to measure there.
+function moveDockIndicator() {
+    const dock = document.querySelector('.mobile-dock');
+    if (!dock || dock.offsetWidth === 0) return;
+    const active = dock.querySelector('.nav-link.active');
+    const indicator = dock.querySelector('.dock-indicator');
+    if (!active) return;
+
+    // Sub-pixel rects (offsetWidth rounds), measured from the dock's padding edge
+    const dockRect = dock.getBoundingClientRect();
+    const tabRect = active.getBoundingClientRect();
+    indicator.style.width = tabRect.width + 'px';
+    indicator.style.transform = `translateX(${tabRect.left - dockRect.left - dock.clientLeft}px)`;
+
+    // Enable the slide transition only after the first placement: flushing
+    // styles first commits that position, so it doesn't animate in from 0
+    if (!dock.classList.contains('ready')) {
+        void indicator.offsetWidth;
+        dock.classList.add('ready');
+    }
 }
 
-document.querySelector('nav ul').addEventListener('click', (event) => {
-    if (event.target.tagName === 'A') {
-        const menu = document.querySelector('nav ul');
-        const button = document.querySelector('.menu-button');
-        menu.classList.remove('active');
-        button.classList.remove('active'); 
-        button.setAttribute('aria-expanded', 'false');
-    } else if (event.target === event.currentTarget) {
-        const menu = document.querySelector('nav ul');
-        const button = document.querySelector('.menu-button');
-        menu.classList.remove('active');
-        button.classList.remove('active'); 
-        button.setAttribute('aria-expanded', 'false');
-    }
-});
+moveDockIndicator();
+// Tab widths change once Outfit loads and when crossing the 768px breakpoint
+document.fonts.ready.then(moveDockIndicator);
+window.addEventListener('resize', moveDockIndicator);
 
 // --- FILTER LOGIC ---
 // Single-select: each button shows the cards tagged with that category.
