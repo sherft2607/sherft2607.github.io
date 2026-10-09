@@ -90,6 +90,113 @@ const projectData = {
     }
 };
 
+// --- SOUND (easter egg, off by default) ---
+// Every sound is synthesised: a bandpass-filtered noise transient (the metal
+// "tk") plus an optional short falling sine (the weight of the detent)
+const sfx = (() => {
+    const STORAGE_KEY = 'sound';
+    let ctx, noise, master;
+    let enabled = false;
+    try { enabled = localStorage.getItem(STORAGE_KEY) === 'on'; } catch (e) {}
+
+    // Built lazily inside a click handler so browsers allow the audio to start
+    function ensureContext() {
+        if (!ctx) {
+            ctx = new AudioContext();
+            master = ctx.createGain();
+            master.gain.value = 1;
+            master.connect(ctx.destination);
+            noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.05), ctx.sampleRate);
+            const data = noise.getChannelData(0);
+            for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+    }
+
+    function click({ freq = 4000, decay = 0.004, body = 180, gain = 0.08, at = 0 } = {}) {
+        const t = ctx.currentTime + 0.005 + at;
+        const out = ctx.createGain();
+        out.gain.setValueAtTime(gain, t);
+        out.gain.exponentialRampToValueAtTime(0.0001, t + decay + 0.03);
+        out.connect(master);
+
+        const src = ctx.createBufferSource();
+        const bp = ctx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = freq;
+        bp.Q.value = 1.2;
+        src.buffer = noise;
+        src.connect(bp).connect(out);
+        src.start(t);
+        src.stop(t + decay);
+
+        if (body) {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.frequency.setValueAtTime(body, t);
+            osc.frequency.exponentialRampToValueAtTime(body * 0.5, t + 0.03);
+            g.gain.setValueAtTime(gain * 0.6, t);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+            osc.connect(g).connect(out);
+            osc.start(t);
+            osc.stop(t + 0.035);
+        }
+    }
+
+    const sounds = {
+        // Nav tab: one firm dial click
+        detent: () => click(),
+        // Filter buttons, lightbox: light, dry selector tick
+        tick: () => click({ freq: 6000, decay: 0.002, body: 0, gain: 0.05 }),
+        // MSG-01 open (pitch > 1 raises it, used for the sent confirmation)
+        latch: (pitch = 1) => {
+            click({ freq: 3000 * pitch, body: 140 * pitch });
+            click({ freq: 5000 * pitch, body: 0, gain: 0.04, at: 0.045 });
+        },
+        // MSG-01 close: the latch in reverse
+        unlatch: () => {
+            click({ freq: 5000, body: 0, gain: 0.04 });
+            click({ freq: 2600, body: 120, at: 0.04 });
+        },
+        // Skill filter: one tick per badge that lights up
+        ratchet: (n = 1) => {
+            for (let i = 0; i < Math.min(n, 16); i++) {
+                click({ freq: 5500, decay: 0.002, body: 0, gain: 0.03, at: i * 0.018 });
+            }
+        }
+    };
+
+    return {
+        play(name, arg) {
+            if (!enabled) return;
+            ensureContext();
+            sounds[name](arg);
+        },
+        setEnabled(on) {
+            enabled = on;
+            try { localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off'); } catch (e) {}
+        },
+        get enabled() { return enabled; }
+    };
+})();
+
+const soundToggle = document.getElementById('soundToggle');
+
+function renderSoundToggle() {
+    soundToggle.setAttribute('aria-pressed', String(sfx.enabled));
+    soundToggle.querySelector('.sound-state').textContent = sfx.enabled ? 'ON' : 'OFF';
+}
+
+soundToggle.addEventListener('click', () => {
+    // Click on the way out too, so turning it off still feels mechanical
+    if (sfx.enabled) sfx.play('tick');
+    sfx.setEnabled(!sfx.enabled);
+    sfx.play('detent');
+    renderSoundToggle();
+});
+
+renderSoundToggle();
+
 // --- NAVIGATION LOGIC ---
 // Sections hidden with an inline display:none (e.g. PROJECTS while it's being
 // filled in) aren't routable, so a stale #projects link falls back to About.
@@ -122,6 +229,9 @@ function showPage(pageId, historyMode = 'push') {
     });
 
     moveDockIndicator();
+
+    // Only real clicks click; first load and Back/Forward stay silent
+    if (historyMode === 'push') sfx.play('detent');
 
     // Record each section in history so reload and Back/Forward work
     const newHash = '#' + pageId;
@@ -187,6 +297,7 @@ if (siteHeader && heroName && 'IntersectionObserver' in window) {
 // --- FILTER LOGIC ---
 // Single-select: each button shows the cards tagged with that category.
 function filterProjects(category) {
+    sfx.play('tick');
     document.querySelectorAll('.filter-btn').forEach(btn => {
         const isActive = btn.dataset.filter === category;
         btn.classList.toggle('active', isActive);
@@ -227,6 +338,8 @@ document.querySelectorAll('.skill-filter').forEach(btn => {
         skillCloud.querySelectorAll('.skill-badge').forEach(badge => {
             badge.classList.toggle('match', badge.dataset.skill === category);
         });
+        if (category === 'all') sfx.play('tick');
+        else sfx.play('ratchet', skillCloud.querySelectorAll('.skill-badge.match').length);
     });
 });
 
@@ -253,6 +366,7 @@ const msgSend = document.getElementById('msgSend');
 const msgSuccess = document.getElementById('msgSuccess');
 
 function setMessagePanel(open) {
+    if (open !== isMessagePanelOpen()) sfx.play(open ? 'latch' : 'unlatch');
     // Hand focus back to the toggle before inert drops it from the closing panel
     if (!open && msgPanel.contains(document.activeElement)) msgToggle.focus();
     msgPanel.classList.toggle('open', open);
@@ -309,6 +423,7 @@ msgForm.addEventListener('submit', async (event) => {
         msgForm.hidden = true;
         msgSuccess.hidden = false;
         msgSuccess.focus();
+        sfx.play('latch', 1.5);
     } catch (error) {
         // Keep what they typed and point them at email so the message isn't lost
         msgStatus.className = 'msg-status error';
@@ -386,6 +501,7 @@ function closeLightbox() {
 }
 
 function changeImage(n) {
+    sfx.play('tick');
     currentLightboxIndex += n;
     if (currentLightboxIndex >= lightboxImages.length) {
         currentLightboxIndex = 0;
@@ -543,7 +659,6 @@ function pageFromHash() {
 // without pushing a new history entry
 window.addEventListener('popstate', () => {
     closeProjectModal();
-    closeContactForm();
     showPage(pageFromHash(), 'none');
 });
 

@@ -1134,12 +1134,37 @@ header a:hover::after, header a.active::after {
 
 .site-footer-coord { color: rgba(163, 197, 133, 0.6); }
 
+/* Easter-egg sound switch: reads as footer text until it's switched on */
+.site-footer-sound {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.site-footer-sound:hover,
+.site-footer-sound:focus-visible { color: rgba(255, 255, 255, 0.8); }
+
+.site-footer-sound:focus-visible {
+    outline: 1px solid rgba(163, 197, 133, 0.6);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+.site-footer-sound[aria-pressed="true"] .sound-state { color: #A3C585; }
+
 /* Too narrow for three columns: stack and centre, coordinates on their own line */
 @media (max-width: 1100px) {
     .site-footer-inner { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 12px; }
     .site-footer-note { justify-self: center; }
     .site-footer-coord { display: block; margin-top: 6px; }
     .site-footer-sep { display: none; }
+    .site-footer-sound { display: block; margin: 10px auto 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
