@@ -16,17 +16,64 @@ html, body {
     padding-top: 60px;
 }
 
-/* --- BACKGROUND ANIMATION CANVAS --- */
-#bg-canvas {
+/* --- BACKGROUND: AMBIENT GLOW + CAD VIEWPORT GRID --- */
+/* Base colour for overscroll and anything outside the fixed layers */
+html { background-color: #1c1c1c; }
+
+/* Both layers are fixed to the viewport, behind all content, and static */
+body::before,
+body::after {
+    content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Deep Earthy Gradient: Charcoal to Dark Forest */
-    background: linear-gradient(135deg, #1c1c1c 0%, #262b26 100%);
-    z-index: -1; /* Places it behind all content */
-    pointer-events: none; /* Allows clicking through to content */
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Ambient glow: deep charcoal to dark forest, lit by soft sage from the
+   upper left, with a faint grain so the gradients don't band */
+body::before {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.06 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+        radial-gradient(60% 55% at 12% 0%, rgba(163, 197, 133, 0.13), transparent 70%), /* Sage key light */
+        radial-gradient(55% 50% at 95% 100%, rgba(120, 160, 110, 0.09), transparent 70%), /* Forest fill */
+        radial-gradient(90% 70% at 60% 40%, rgba(36, 44, 36, 0.7), transparent 75%),
+        linear-gradient(160deg, #1a1b1a 0%, #1d211d 50%, #222922 100%);
+}
+
+/* Viewport grid, like a Rhino/CAD drawing plane: minor lines every 24px, a
+   major line every 5th, and sage world axes through the origin, faded out
+   toward the edges so it reads as a plane rather than graph paper. The origin
+   sits on the content's left edge, so the Y axis doubles as a margin line. */
+body::after {
+    --grid-minor: 24px;
+    --grid-major: 120px;
+    --origin-x: max(40px, calc((100vw - 1400px) / 2 + 40px));
+    --origin-y: 112px;
+    background-image:
+        linear-gradient(rgba(163, 197, 133, 0.16), rgba(163, 197, 133, 0.16)), /* Y axis */
+        linear-gradient(rgba(163, 197, 133, 0.16), rgba(163, 197, 133, 0.16)), /* X axis */
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size:
+        1px 100%,
+        100% 1px,
+        var(--grid-major) var(--grid-major),
+        var(--grid-major) var(--grid-major),
+        var(--grid-minor) var(--grid-minor),
+        var(--grid-minor) var(--grid-minor);
+    background-position:
+        var(--origin-x) 0,
+        0 var(--origin-y),
+        var(--origin-x) var(--origin-y),
+        var(--origin-x) var(--origin-y),
+        var(--origin-x) var(--origin-y),
+        var(--origin-x) var(--origin-y);
+    background-repeat: no-repeat, no-repeat, repeat, repeat, repeat, repeat;
+    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 35% 30%, #000 25%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 75% at 35% 30%, #000 25%, transparent 100%);
 }
 
 /* --- MODERN HEADER & NAV --- */
@@ -1858,6 +1905,9 @@ header a:hover::after, header a.active::after {
     body { padding-top: 0; }
 
     .mobile-dock { display: flex; }
+
+    /* Grid origin on the 20px content gutter, X axis in the top margin */
+    body::after { --origin-x: 20px; --origin-y: 14px; }
 
     /* With no header, Resume and Portfolio name their owner above the title */
     .page-owner { display: block; margin-bottom: 6px; }
