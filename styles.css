@@ -353,10 +353,8 @@ header a:hover::after, header a.active::after {
 .profile-image {
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
+    height: auto; /* natural 3:4, so the model isn't cropped */
     object-fit: cover;
-    object-position: center top;
     border-radius: 14px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -1803,9 +1801,11 @@ header a:hover::after, header a.active::after {
     .resume-card-actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 20px; }
     .portfolio-feature { grid-template-columns: 1fr; gap: 36px; }
 
-    /* About: portrait moves above the name, cards stack */
-    .hero { grid-template-columns: 1fr; gap: 40px; min-height: 0; }
-    .hero-portrait { order: -1; justify-self: start; max-width: 260px; }
+    /* About: photo leads at its natural proportion above the text; cards stack */
+    .hero { grid-template-columns: 1fr; gap: 32px; min-height: 0; }
+    .hero-portrait { order: -1; justify-self: stretch; max-width: none; }
+    .hero-portrait::before,
+    .hero-portrait::after { display: none; }
     .about-row { grid-template-columns: 1fr; gap: 40px; }
     .featured-work { grid-template-columns: 1fr; gap: 32px; }
 }
@@ -1894,9 +1894,7 @@ header a:hover::after, header a.active::after {
 
     .introduction { padding: 30px 20px; }
     .hero { padding-bottom: 48px; }
-    .hero-portrait { max-width: 200px; margin-left: 10px; }
-    .hero-portrait::before { inset: 10px -10px -10px 10px; }
-    .hero-portrait::after { top: -16px; left: -16px; width: 90px; height: 90px; }
+    .profile-image { border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45); }
     .hero-name { margin: 20px 0 18px 0; }
     .hero-actions { margin-top: 32px; }
     .hero-actions .contact-button { flex: 1 1 auto; text-align: center; }
