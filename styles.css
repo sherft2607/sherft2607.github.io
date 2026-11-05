@@ -2479,3 +2479,93 @@ header a:hover::after, header a.active::after {
 
     .lightbox-close { top: 16px; right: 20px; }
 }
+
+/* Projects password gate: centered card, same sheet look as the message panel */
+.projects-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 32px;
+    text-align: center;
+    background: #222622;
+    border: 1px solid rgba(163, 197, 133, 0.25);
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+}
+.projects-gate[hidden] { display: none; }
+.projects-gate h2 { margin: 0 0 10px; font-size: 1.5em; }
+.gate-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 16px;
+    fill: none;
+    stroke: #A3C585;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.gate-note { margin: 0 0 24px; color: rgba(255, 255, 255, 0.65); line-height: 1.6; }
+.projects-gate input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 14px;
+    padding: 14px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    font-family: inherit;
+    font-size: 1em;
+    text-align: center;
+}
+.projects-gate input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.projects-gate input:focus-visible { outline: 2px solid #A3C585; outline-offset: 2px; border-color: transparent; }
+.projects-gate .contact-button { width: 100%; }
+.projects-gate .contact-button:disabled { opacity: 0.6; cursor: progress; }
+.gate-status { min-height: 1.4em; margin: 14px 0 0; font-size: 0.9em; color: rgba(255, 255, 255, 0.6); }
+.gate-status.error { color: #e0907e; }
+
+/* Project modal video: native 16:9, never cropped */
+.modal-video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 70vh;
+    background: #000;
+    object-fit: contain;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+.modal-video[hidden] { display: none; }
+
+/* Portrait phone screenshots: show the top of each instead of a center strip */
+.gallery-item { height: 220px; object-position: top; }
+@media (max-width: 768px) {
+    .gallery-item { height: 170px; }
+}
+
+/* Links inside project descriptions: same sage pill as .contact-button.primary */
+#modalDesc a {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 12px 28px;
+    border: 2px solid #A3C585;
+    border-radius: 50px;
+    background-color: #A3C585;
+    color: #1c1c1c;
+    font-size: 0.95em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(163, 197, 133, 0.2);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+#modalDesc a:hover,
+#modalDesc a:focus-visible {
+    background-color: transparent;
+    color: #A3C585;
+    transform: translateY(-2px);
+}
+

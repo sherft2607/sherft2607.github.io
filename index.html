@@ -46,8 +46,7 @@
             </div>
             <ul id="nav-links">
                 <li><a href="#" onclick="showPage('about'); return false;" class="nav-link active" data-target="about" aria-current="page">ABOUT</a></li>
-                <!-- PROJECTS hidden until real project content is ready -->
-                <li style="display: none !important;"><a href="#" onclick="showPage('projects'); return false;" class="nav-link" data-target="projects">PROJECTS</a></li>
+                <li><a href="#" onclick="showPage('projects'); return false;" class="nav-link" data-target="projects">PROJECTS</a></li>
                 <li><a href="#" onclick="showPage('resume'); return false;" class="nav-link" data-target="resume">RESUME</a></li>
                 <li><a href="#" onclick="showPage('portfolio'); return false;" class="nav-link" data-target="portfolio">PORTFOLIO</a></li>
             </ul>
@@ -58,6 +57,7 @@
     <nav class="mobile-dock" aria-label="Primary">
         <span class="dock-indicator" aria-hidden="true"></span>
         <a href="#about" onclick="showPage('about'); return false;" class="nav-link active" data-target="about" aria-current="page">About</a>
+        <a href="#projects" onclick="showPage('projects'); return false;" class="nav-link" data-target="projects">Projects</a>
         <a href="#resume" onclick="showPage('resume'); return false;" class="nav-link" data-target="resume">Resume</a>
         <a href="#portfolio" onclick="showPage('portfolio'); return false;" class="nav-link" data-target="portfolio">Portfolio</a>
     </nav>
@@ -253,117 +253,41 @@
         </div>
     </section>
 
-    <section id="projects" class="page-content projects" style="display: none !important;">
+    <section id="projects" class="page-content projects">
         <div class="projects-header">
-            <h1>PROJECTS</h1>
+            <div class="page-title">
+                <p class="eyebrow page-owner">Shandon Herft</p>
+                <h1>PROJECTS</h1>
+            </div>
         </div>
 
-        <div class="filter-container" role="group" aria-label="Filter projects">
-            <button class="filter-btn active" data-filter="all" aria-pressed="true" onclick="filterProjects('all')">All</button>
-            <button class="filter-btn" data-filter="computational" aria-pressed="false" onclick="filterProjects('computational')">Computational</button>
-            <button class="filter-btn" data-filter="architecture" aria-pressed="false" onclick="filterProjects('architecture')">Architecture</button>
-            <button class="filter-btn" data-filter="college" aria-pressed="false" onclick="filterProjects('college')">College</button>
-            <button class="filter-btn" data-filter="work" aria-pressed="false" onclick="filterProjects('work')">Work</button>
-        </div>
-        
         <div class="projects-grid">
-            <div class="project-card" onclick="openProject('robotics')" data-category="computational college">
-                <div class="project-image-wrapper">
-                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/333/fff?text=Robotic+Fabrication'); background-size: cover; background-position: center;"></div>
-                    <div class="project-overlay"></div>
-                </div>
-                <div class="project-info">
-                    <div class="project-tags">
-                        <span class="project-tag">Robotics</span>
-                        <span class="project-tag">College</span>
-                    </div>
-                    <h3 class="project-title">Robotic Fabrication</h3>
-                    <p class="project-description">Exploration of additive manufacturing techniques using KUKA robots.</p>
-                    <div class="read-more-link">View Project &rarr;</div>
-                </div>
-            </div>
-
-            <div class="project-card" onclick="openProject('vr')" data-category="computational college">
-                <div class="project-image-wrapper">
-                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/444/fff?text=VR+Interface'); background-size: cover; background-position: center;"></div>
-                    <div class="project-overlay"></div>
-                </div>
-                <div class="project-info">
-                    <div class="project-tags">
-                        <span class="project-tag">VR</span>
-                        <span class="project-tag">College</span>
-                    </div>
-                    <h3 class="project-title">VR Interface</h3>
-                    <p class="project-description">A custom Unity-based interface for real-time interaction with architectural geometry.</p>
-                    <div class="read-more-link">View Project &rarr;</div>
-                </div>
-            </div>
-
-            <div class="project-card" onclick="openProject('pavilion')" data-category="architecture computational college">
-                <div class="project-image-wrapper">
-                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/555/fff?text=Parametric+Pavilion'); background-size: cover; background-position: center;"></div>
-                    <div class="project-overlay"></div>
-                </div>
-                <div class="project-info">
-                    <div class="project-tags">
-                        <span class="project-tag">Architecture</span>
-                        <span class="project-tag">College</span>
-                    </div>
-                    <h3 class="project-title">Parametric Pavilion</h3>
-                    <p class="project-description">Computational design study focusing on structural optimization.</p>
-                    <div class="read-more-link">View Project &rarr;</div>
-                </div>
-            </div>
-
-            <div class="project-card" onclick="openProject('worktower')" data-category="architecture work">
-                <div class="project-image-wrapper">
-                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/222/fff?text=High-Rise+Tower'); background-size: cover; background-position: center;"></div>
-                    <div class="project-overlay"></div>
-                </div>
-                <div class="project-info">
-                    <div class="project-tags">
-                        <span class="project-tag">Architecture</span>
-                        <span class="project-tag">Work</span>
-                    </div>
-                    <h3 class="project-title">High-Rise Tower</h3>
-                    <p class="project-description">Professional commercial development project focusing on sustainable facade systems.</p>
-                    <div class="read-more-link">View Project &rarr;</div>
-                </div>
-            </div>
-
-             <div class="project-card" onclick="openProject('urban')" data-category="computational work">
-                <div class="project-image-wrapper">
-                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/111/fff?text=Generative+Urbanism'); background-size: cover; background-position: center;"></div>
-                    <div class="project-overlay"></div>
-                </div>
-                <div class="project-info">
-                    <div class="project-tags">
-                        <span class="project-tag">Computational</span>
-                        <span class="project-tag">Work</span>
-                    </div>
-                    <h3 class="project-title">Generative Urban Planning</h3>
-                    <p class="project-description">AI-driven urban layout optimization for mixed-use developments.</p>
-                    <div class="read-more-link">View Project &rarr;</div>
-                </div>
-            </div>
-
-             <div class="project-card" onclick="openProject('housing')" data-category="architecture college">
-                <div class="project-image-wrapper">
-                    <div class="project-image" style="background-image: url('https://placehold.co/600x400/000/fff?text=Sustainable+Housing'); background-size: cover; background-position: center;"></div>
-                    <div class="project-overlay"></div>
-                </div>
-                <div class="project-info">
-                    <div class="project-tags">
-                        <span class="project-tag">Architecture</span>
-                        <span class="project-tag">College</span>
-                    </div>
-                    <h3 class="project-title">Sustainable Housing Complex</h3>
-                    <p class="project-description">Net-zero residential complex design focusing on community interaction.</p>
-                    <div class="read-more-link">View Project &rarr;</div>
-                </div>
-            </div>
-
+<div class="project-card" onclick="openProject('listworth')" data-category="all">
+<div class="project-image-wrapper">
+<div class="project-image" style="background-image: url('assets/projects/listworth/hero.webp'); background-size: cover; background-position: center;"></div>
+<div class="project-overlay"></div>
+</div>
+<div class="project-info">
+<div class="project-tags">
+<span class="project-tag">Web App</span>
+<span class="project-tag">PWA</span>
+</div>
+<h3 class="project-title">ListWorth</h3>
+<p class="project-description">A mobile-first, offline-first PWA that tracks how much an AMC Stubs A-List membership saves you.</p>
+<div class="read-more-link">View Project &rarr;</div>
+</div>
+</div>
+<form class="projects-gate" id="projectsGate">
+            <svg class="gate-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <p class="eyebrow">Private</p>
+            <h2>More projects</h2>
+            <p class="gate-note">Have a password? Enter it to view the private projects.</p>
+            <input type="password" id="projectsPassword" placeholder="Password" aria-label="Password" autocomplete="current-password" required>
+            <button type="submit" class="contact-button primary" id="projectsUnlock">Unlock</button>
+            <p class="gate-status" id="projectsStatus" role="status" aria-live="polite"></p>
+        </form>
         </div>
+    
     </section>
 
     <section id="resume" class="page-content resume">
@@ -715,6 +639,7 @@
     <div id="projectModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeProjectModal()">&times;</span>
+            <video id="modalVideo" class="modal-video" controls playsinline preload="metadata" hidden></video>
             <img id="modalImg" src="" alt="Project Image" class="modal-header-image">
             <div class="modal-body">
                 <div class="modal-tags" id="modalTags">

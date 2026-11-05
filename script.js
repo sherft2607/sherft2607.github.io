@@ -1,92 +1,21 @@
 // --- DATA: Project Details ---
 const projectData = {
-    'robotics': {
-        title: "Robotic Fabrication & Additive Manufacturing",
-        image: "https://placehold.co/1200x600/333/fff?text=Robotic+Fabrication",
-        gallery: [
-            "https://placehold.co/600x400/333/fff?text=Robotic+1",
-            "https://placehold.co/600x400/444/fff?text=Robotic+2",
-            "https://placehold.co/600x400/555/fff?text=Robotic+3",
-            "https://placehold.co/600x400/666/fff?text=Robotic+4"
+    "listworth": {
+        "title": "ListWorth",
+        "image": "assets/projects/listworth/hero.webp",
+        "gallery": [
+            "assets/projects/listworth/wrapped.webp",
+            "assets/projects/listworth/diary.webp",
+            "assets/projects/listworth/stats.webp"
         ],
-        tags: ["Robotics", "KUKA", "Python", "Fabrication"],
-        description: `
-            <p>This project explores the intersection of computational design and robotic fabrication. Utilizing KUKA industrial robots, we developed custom end-effectors to extrude recycled plastic materials into complex, non-standard geometries that would be impossible with traditional manufacturing methods.</p>
-            <p>The workflow involved developing a custom Grasshopper script to generate the toolpaths (G-code) directly from the 3D model, allowing for rapid prototyping and iteration. We focused on structural integrity and material efficiency, reducing waste by 40% compared to subtractive methods.</p>
-            <p><strong>Tools Used:</strong> Rhino, Grasshopper, KUKA|prc, Python.</p>
-        `
-    },
-    'vr': {
-        title: "Immersive VR Architecture Interface",
-        image: "https://placehold.co/1200x600/444/fff?text=VR+Interface",
-        gallery: [
-            "https://placehold.co/600x400/222/fff?text=Unity+Setup",
-            "https://placehold.co/600x400/333/fff?text=In-Game+View",
-            "https://placehold.co/600x400/444/fff?text=User+Testing"
+        "tags": [
+            "Next.js",
+            "TypeScript",
+            "Supabase",
+            "PWA"
         ],
-        tags: ["Unity", "C#", "Oculus", "UI/UX"],
-        description: `
-            <p>Bridging the gap between digital models and physical experience, this project created a custom VR interface using Unity and the Meta Quest headset. The goal was to allow clients and designers to step inside their models and manipulate geometry in real-time.</p>
-            <p>I programmed bidirectional communication between Rhino/Grasshopper and Unity, meaning changes made in VR updated the parametric model instantly, and vice versa. This feedback loop enables a more intuitive design process.</p>
-            <p><strong>Tools Used:</strong> Unity 3D, C#, Grasshopper, UDP Networking.</p>
-        `
-    },
-    'pavilion': {
-        title: "Parametric Pavilion Design",
-        image: "https://placehold.co/1200x600/555/fff?text=Parametric+Pavilion",
-        gallery: [
-            "https://placehold.co/600x400/666/fff?text=Structure",
-            "https://placehold.co/600x400/777/fff?text=Analysis",
-            "https://placehold.co/600x400/888/fff?text=Render"
-        ],
-        tags: ["Grasshopper", "Karamba", "Optimization"],
-        description: `
-            <p>A computational design study focusing on structural optimization and material efficiency for a large-span public pavilion. The form finding process was driven by physics simulations to minimize bending moments and material usage.</p>
-            <p>Using Karamba3D for structural analysis, the mesh was iteratively optimized. The final design features a lightweight lattice structure that provides shade while maintaining an airy, open feel.</p>
-            <p><strong>Tools Used:</strong> Rhino, Grasshopper, Karamba3D, Kangaroo.</p>
-        `
-    },
-    'worktower': {
-        title: "High-Rise Commercial Tower",
-        image: "https://placehold.co/1200x600/222/fff?text=High-Rise+Tower",
-        gallery: [
-            "https://placehold.co/600x400/111/fff?text=Facade+Detail",
-            "https://placehold.co/600x400/222/fff?text=Lobby+Render",
-        ],
-        tags: ["Architecture", "Professional Work", "Revit"],
-        description: `
-            <p>A 40-story commercial tower designed during my time at [Firm Name]. The project emphasizes sustainable facade systems, utilizing high-performance glazing and automated shading devices to reduce solar gain.</p>
-            <p>My role involved coordinating the BIM model between structural and MEP consultants and developing detailed drawing sets for the podium levels.</p>
-            <p><strong>Tools Used:</strong> Revit, Enscape, Adobe Creative Suite.</p>
-        `
-    },
-    'urban': {
-        title: "Generative Urban Planning",
-        image: "https://placehold.co/1200x600/111/fff?text=Generative+Urbanism",
-        gallery: [
-            "https://placehold.co/600x400/222/fff?text=Site+Plan",
-            "https://placehold.co/600x400/333/fff?text=Traffic+Sim",
-        ],
-        tags: ["Computational Design", "Professional Work", "Python"],
-        description: `
-            <p>This project utilized machine learning algorithms to optimize urban layouts for a new mixed-use district. The goal was to maximize solar exposure and pedestrian connectivity while minimizing wind tunnels and traffic congestion.</p>
-            <p>By simulating thousands of iterations, we were able to identify the most efficient site plan that met all zoning requirements and client sustainability goals.</p>
-            <p><strong>Tools Used:</strong> Rhino, Grasshopper, Python, scikit-learn.</p>
-        `
-    },
-    'housing': {
-        title: "Sustainable Housing Complex",
-        image: "https://placehold.co/1200x600/000/fff?text=Sustainable+Housing",
-        gallery: [
-            "https://placehold.co/600x400/111/fff?text=Courtyard+View",
-            "https://placehold.co/600x400/222/fff?text=Unit+Plan",
-        ],
-        tags: ["Architecture", "College", "Sustainability"],
-        description: `
-            <p>A net-zero residential complex designed for a graduate studio. The project features passive cooling strategies, rainwater harvesting, and community gardens to promote social interaction and environmental responsibility.</p>
-            <p>The design consists of modular units arranged around a central courtyard, creating a microclimate that reduces energy consumption for heating and cooling.</p>
-            <p><strong>Tools Used:</strong> Revit, Lumion, Photoshop.</p>
-        `
+        "description": "<p>ListWorth is a mobile-first progressive web app that answers one question: is an AMC Stubs A-List membership actually paying for itself? Forward it your ticket emails and it turns them into a running record of what you saw, where, in which format, and how much you saved compared with buying each ticket.</p><p><strong>How it helps</strong></p><ul><li>Shows whether the membership beats paying per ticket, with savings and billing-cycle break-even, so the decision is based on numbers.</li><li>Removes manual entry: purchase and cancellation emails are parsed into structured receipts automatically.</li><li>Gives a clearer picture of your habits: hours in the dark, savings by format (Standard, Dolby, IMAX), favourite nights and directors, plus a shareable monthly Wrapped recap.</li><li>Always available: everything is stored on the device and works offline, then syncs across devices once you sign in.</li></ul><p><strong>What I built</strong></p><ul><li>An email parser that extracts movie, theatre, auditorium, showtime and price, and detects the format. It remembers which auditorium is Dolby or IMAX and applies that to earlier tickets.</li><li>An offline-first data layer with an outbox and sync engine over Supabase (Postgres, magic-link and Google sign-in, row-level security).</li><li>A Cloudflare Email Worker for forwarding receipts, and TMDB poster matching.</li><li>Automated tests for the parser, format detection and sync, including the database schema run against an in-process Postgres.</li><li>Deployed on Vercel as an installable PWA.</li></ul><p><strong>Tools Used:</strong> Next.js, TypeScript, Supabase (Postgres, Auth), Cloudflare Workers, TMDB API, Vercel.</p><p><a href=\"https://alist-tracker.vercel.app\" target=\"_blank\" rel=\"noopener\">Open the live app &rarr;</a></p>",
+        "video": "assets/projects/listworth/demo.mp4"
     }
 };
 
@@ -304,22 +233,68 @@ function filterProjects(category) {
         btn.setAttribute('aria-pressed', isActive);
     });
 
-    document.querySelectorAll('.project-card').forEach(card => {
+    document.querySelectorAll('.project-card:not([tabindex])').forEach(card => {
         const cardCats = card.dataset.category.split(' ');
         card.classList.toggle('hidden', category !== 'all' && !cardCats.includes(category));
     });
 }
 
 // Make cards reachable and openable from the keyboard
-document.querySelectorAll('.project-card').forEach(card => {
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('role', 'button');
-    card.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            card.click();
-        }
+function bindProjectCards() {
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                card.click();
+            }
+        });
     });
+}
+
+bindProjectCards();
+
+// --- PRIVATE PROJECTS ---
+// projects.enc.json is AES-GCM ciphertext (key from PBKDF2 of the password),
+// built by tools/encrypt-projects.mjs. A wrong password fails the GCM tag check.
+const b64ToBytes = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+async function decryptProjects(password) {
+    const res = await fetch('projects.enc.json');
+    if (!res.ok) throw new Error('fetch');
+    const { iterations, salt, iv, ct } = await res.json();
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: b64ToBytes(salt), iterations, hash: 'SHA-256' }, base,
+        { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBytes(iv) }, key, b64ToBytes(ct));
+    return JSON.parse(new TextDecoder().decode(plain));
+}
+
+const projectsGate = document.getElementById('projectsGate');
+// No encrypted file deployed means no private projects, so don't show an unlock card that can't work
+fetch('projects.enc.json', { method: 'HEAD' })
+    .then(res => { if (!res.ok) projectsGate.hidden = true; })
+    .catch(() => { projectsGate.hidden = true; });
+projectsGate.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const status = document.getElementById('projectsStatus');
+    const button = document.getElementById('projectsUnlock');
+    button.disabled = true;
+    status.classList.remove('error');
+    status.textContent = 'Unlocking…';
+    try {
+        const { html, data } = await decryptProjects(document.getElementById('projectsPassword').value);
+        Object.assign(projectData, data);
+        projectsGate.insertAdjacentHTML('beforebegin', html);
+        bindProjectCards();
+        projectsGate.hidden = true;
+    } catch (err) {
+        status.classList.add('error');
+        status.textContent = err.message === 'fetch' ? 'Could not load projects. Try again.' : 'Incorrect password.';
+        button.disabled = false;
+    }
 });
 
 // --- RESUME: SKILL FILTERS ---
@@ -573,11 +548,21 @@ function openProject(projectId) {
     if (!data) return;
 
     // Prepare Lightbox Data (Main Image + Gallery)
-    lightboxImages = [data.image, ...(data.gallery || [])];
+    lightboxImages = [data.image, ...(data.gallery || [])].filter(Boolean);
 
     // Populate Main Info
     const mainImg = document.getElementById('modalImg');
-    mainImg.src = data.image; // Set main image
+    // A video replaces the header image; its poster is the image. No media at all shows text only.
+    const video = document.getElementById('modalVideo');
+    video.hidden = !data.video;
+    if (data.video) {
+        video.poster = data.image || '';
+        video.src = data.video;
+    } else {
+        video.removeAttribute('src');
+    }
+    mainImg.style.display = data.image && !data.video ? '' : 'none';
+    if (data.image) mainImg.src = data.image;
     mainImg.alt = data.title;
     
     // Click Main Image -> Open Lightbox at Index 0
@@ -631,6 +616,7 @@ function openProject(projectId) {
 }
 
 function closeProjectModal() {
+    document.getElementById('modalVideo').pause();
     const modal = document.getElementById("projectModal");
     modal.style.display = "none";
     document.body.style.overflow = "auto";
