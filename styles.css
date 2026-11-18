@@ -2527,18 +2527,79 @@ header a:hover::after, header a.active::after {
 .gate-status { min-height: 1.4em; margin: 14px 0 0; font-size: 0.9em; color: rgba(255, 255, 255, 0.6); }
 .gate-status.error { color: #e0907e; }
 
-/* Project modal video: native 16:9, never cropped */
-.modal-video {
-    display: block;
+/* Project modal video: native 16:9, never cropped, with click-to-play cover */
+.modal-video-wrap {
+    position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
     max-height: 70vh;
     background: #000;
-    object-fit: contain;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
+    overflow: hidden;
 }
-.modal-video[hidden] { display: none; }
+.modal-video-wrap[hidden] { display: none; }
+.modal-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    object-fit: contain;
+}
+.modal-video-cover {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    background: #000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-video-cover[hidden] { display: none; }
+.modal-video-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), filter 0.3s;
+    filter: brightness(0.88);
+}
+.modal-video-cover:hover img,
+.modal-video-cover:focus-visible img {
+    transform: scale(1.02);
+    filter: brightness(0.75);
+}
+.modal-play-btn {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(28, 28, 28, 0.82);
+    border: 2px solid #A3C585;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s;
+}
+.modal-play-btn svg {
+    width: 28px;
+    height: 28px;
+    fill: #A3C585;
+    margin-left: 3px;
+    transition: fill 0.25s;
+}
+.modal-video-cover:hover .modal-play-btn,
+.modal-video-cover:focus-visible .modal-play-btn {
+    transform: scale(1.08);
+    background: #A3C585;
+}
+.modal-video-cover:hover .modal-play-btn svg,
+.modal-video-cover:focus-visible .modal-play-btn svg {
+    fill: #1c1c1c;
+}
 
 /* Portrait phone screenshots: show the top of each instead of a center strip */
 .gallery-item { height: 220px; object-position: top; }

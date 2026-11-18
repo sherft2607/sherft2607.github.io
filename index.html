@@ -262,6 +262,21 @@
         </div>
 
         <div class="projects-grid">
+<div class="project-card" onclick="openProject('4site')" data-category="all">
+<div class="project-image-wrapper">
+<div class="project-image" style="background-image: url('assets/projects/4site/hero.webp'); background-size: cover; background-position: center;"></div>
+<div class="project-overlay"></div>
+</div>
+<div class="project-info">
+<div class="project-tags">
+<span class="project-tag">AEC Tech NYC</span>
+<span class="project-tag">3D Map</span>
+</div>
+<h3 class="project-title">4site</h3>
+<p class="project-description">A citywide 3D map of NYC that surfaces public records for a site and its touching neighbors before construction starts.</p>
+<div class="read-more-link">View Project &rarr;</div>
+</div>
+</div>
 <div class="project-card" onclick="openProject('listworth')" data-category="all">
 <div class="project-image-wrapper">
 <div class="project-image" style="background-image: url('assets/projects/listworth/hero.webp'); background-size: cover; background-position: center;"></div>
@@ -639,7 +654,15 @@
     <div id="projectModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeProjectModal()">&times;</span>
-            <video id="modalVideo" class="modal-video" controls playsinline preload="metadata" hidden></video>
+            <div id="modalVideoWrap" class="modal-video-wrap" hidden>
+                <video id="modalVideo" class="modal-video" controls playsinline preload="none"></video>
+                <button type="button" id="modalVideoCover" class="modal-video-cover" aria-label="Play project video">
+                    <img id="modalVideoPoster" src="" alt="">
+                    <span class="modal-play-btn" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </span>
+                </button>
+            </div>
             <img id="modalImg" src="" alt="Project Image" class="modal-header-image">
             <div class="modal-body">
                 <div class="modal-tags" id="modalTags">

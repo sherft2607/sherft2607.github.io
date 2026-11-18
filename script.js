@@ -1,5 +1,26 @@
 // --- DATA: Project Details ---
 const projectData = {
+    "4site": {
+        "title": "4site",
+        "image": "assets/projects/4site/hero.webp",
+        "video": "assets/projects/4site/demo.mp4",
+        "gallery": [
+            "assets/projects/4site/city-map.webp",
+            "assets/projects/4site/similar-arc.webp",
+            "assets/projects/4site/lessons.webp",
+            "assets/projects/4site/checklist.webp",
+            "assets/projects/4site/chat.webp"
+        ],
+        "tags": [
+            "React",
+            "TypeScript",
+            "MapLibre",
+            "deck.gl",
+            "FastAPI",
+            "NYC Open Data"
+        ],
+        "description": "<p>Built at AEC Tech NYC 2026 with a team of eight, 4site is a citywide 3D map of New York City for architects and structural engineers. Before excavation or structural work begins next to older buildings, the warning signs are often already sitting in public records: 311 reports, DOB complaints and violations, stop-work orders, facade filings, and the age and construction of adjacent lots. 4site pulls those scattered city datasets onto one interactive map for a site and its touching neighbors, with the source and date attached to every fact.</p><p><strong>How it works</strong></p><ul><li><strong>Citywide map and layers:</strong> Toggle 11 NYC public data layers including construction incidents, structural complaints, fire and FDNY vacate orders, unsafe facades, FEMA flood zones, contamination sites, and an excavation watchlist.</li><li><strong>Site and touching neighbors:</strong> Search any NYC address or click a building to fly straight to it in 3D, outlining the lot, every touching lot, and which neighboring buildings are attached.</li><li><strong>What stands out and early warnings:</strong> Surfaces the highest-priority life-safety records first, flags sequences like work continuing after a stop-work order, and explains why each item is shown.</li><li><strong>Similar projects and project checklist:</strong> Compares the site against similar past cases across NYC, then turns project parameters (work type, construction type, team roles) into a shared discipline checklist and plain-English Q&amp;A linked to public records.</li></ul><p><strong>What I built (Map &amp; 3D)</strong></p><ul><li>The full-bleed citywide 3D map using MapLibre GL and deck.gl, with zoom-aware clustering and opacity fading so dense citywide datasets stay fast and readable.</li><li>Address search and click-to-select with smooth camera fly-to, lot and touching-neighbor highlighting, and visual separation for attached buildings.</li><li>Styled 3D building extrusions and Cityweft 3D city model integration around the picked site, plus 3D arcs connecting similar past cases across the city.</li><li>The multi-source layer panel with live toggles, record counts, dataset links, and last-updated dates.</li></ul><p><strong>Tools Used:</strong> React, TypeScript, Vite, Tailwind CSS, MapLibre GL, deck.gl, Cityweft, FastAPI, NYC Open Data, Vercel.</p><p><a href=\"https://4site-nyc.vercel.app/\" target=\"_blank\" rel=\"noopener\">Open the live app &rarr;</a> &nbsp; <a href=\"https://github.com/sherft2607/aec_hackathon_smart_plan\" target=\"_blank\" rel=\"noopener\">View on GitHub &rarr;</a></p>"
+    },
     "listworth": {
         "title": "ListWorth",
         "image": "assets/projects/listworth/hero.webp",
@@ -552,14 +573,29 @@ function openProject(projectId) {
 
     // Populate Main Info
     const mainImg = document.getElementById('modalImg');
-    // A video replaces the header image; its poster is the image. No media at all shows text only.
+    // A video replaces the header image behind a click-to-play cover. No media at all shows text only.
+    const videoWrap = document.getElementById('modalVideoWrap');
     const video = document.getElementById('modalVideo');
-    video.hidden = !data.video;
+    const videoCover = document.getElementById('modalVideoCover');
+    const videoPoster = document.getElementById('modalVideoPoster');
+    videoWrap.hidden = !data.video;
     if (data.video) {
+        video.pause();
         video.poster = data.image || '';
         video.src = data.video;
+        video.load();
+        videoPoster.src = data.image || '';
+        videoPoster.alt = `${data.title} cover`;
+        videoCover.hidden = !data.image;
+        videoCover.onclick = function() {
+            sfx.play('detent');
+            videoCover.hidden = true;
+            video.play();
+        };
     } else {
+        video.pause();
         video.removeAttribute('src');
+        videoCover.hidden = true;
     }
     mainImg.style.display = data.image && !data.video ? '' : 'none';
     if (data.image) mainImg.src = data.image;
