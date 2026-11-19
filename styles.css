@@ -287,6 +287,7 @@ header a:hover::after, header a.active::after {
 .page-content.active-section .resume-header,
 .page-content.active-section .portfolio-header,
 .page-content.active-section .projects-header,
+.page-content.active-section .projects-group-header,
 .page-content.active-section .filter-container,
 .page-content.active-section .projects-grid {
     opacity: 0;
@@ -302,6 +303,8 @@ header a:hover::after, header a.active::after {
 .page-content.active-section .resume-header,
 .page-content.active-section .portfolio-header,
 .page-content.active-section .projects-header { animation-delay: 0.2s; }
+
+.page-content.active-section .projects-group-header { animation-delay: 0.25s; }
 
 .page-content.active-section .filter-container { animation-delay: 0.3s; }
 
@@ -2628,5 +2631,38 @@ header a:hover::after, header a.active::after {
     background-color: transparent;
     color: #A3C585;
     transform: translateY(-2px);
+}
+
+/* Projects page subsections (01 AEC Tech Hackathons / 02 Personal Projects) */
+.projects-group + .projects-group {
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.projects-group-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px 24px;
+    margin-bottom: 24px;
+}
+
+.projects-group-header .block-title {
+    margin: 0;
+}
+
+.projects-group-header p {
+    margin: 0;
+    color: #888;
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    .projects-group + .projects-group {
+        margin-top: 40px;
+        padding-top: 32px;
+    }
 }
 

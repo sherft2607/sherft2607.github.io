@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 
@@ -261,8 +261,13 @@
             </div>
         </div>
 
-        <div class="projects-grid">
-<div class="project-card" onclick="openProject('4site')" data-category="all">
+        <div class="projects-group">
+            <div class="projects-group-header">
+                <h2 class="block-title"><span>01</span>AEC Tech Hackathons</h2>
+                <p>Weekend sprints across NYC, Chicago, and Boston</p>
+            </div>
+            <div class="projects-grid">
+<div class="project-card" onclick="openProject('4site')" data-category="hackathon">
 <div class="project-image-wrapper">
 <div class="project-image" style="background-image: url('assets/projects/4site/hero.webp'); background-size: cover; background-position: center;"></div>
 <div class="project-overlay"></div>
@@ -277,7 +282,7 @@
 <div class="read-more-link">View Project &rarr;</div>
 </div>
 </div>
-<div class="project-card" onclick="openProject('throwshade')" data-category="all">
+<div class="project-card" onclick="openProject('throwshade')" data-category="hackathon">
 <div class="project-image-wrapper">
 <div class="project-image" style="background-image: url('assets/projects/throwshade/hero.webp'); background-size: cover; background-position: center;"></div>
 <div class="project-overlay"></div>
@@ -292,7 +297,7 @@
 <div class="read-more-link">View Project &rarr;</div>
 </div>
 </div>
-<div class="project-card" onclick="openProject('monkeys-on-keyboards')" data-category="all">
+<div class="project-card" onclick="openProject('monkeys-on-keyboards')" data-category="hackathon">
 <div class="project-image-wrapper">
 <div class="project-image" style="background-image: url('assets/projects/monkeys-on-keyboards/hero.webp'); background-size: cover; background-position: center;"></div>
 <div class="project-overlay"></div>
@@ -307,7 +312,7 @@
 <div class="read-more-link">View Project &rarr;</div>
 </div>
 </div>
-<div class="project-card" onclick="openProject('emergence')" data-category="all">
+<div class="project-card" onclick="openProject('emergence')" data-category="hackathon">
 <div class="project-image-wrapper">
 <div class="project-image" style="background-image: url('assets/projects/emergence/hero.webp'); background-size: cover; background-position: center;"></div>
 <div class="project-overlay"></div>
@@ -322,7 +327,16 @@
 <div class="read-more-link">View Project &rarr;</div>
 </div>
 </div>
-<div class="project-card" onclick="openProject('listworth')" data-category="all">
+            </div>
+        </div>
+
+        <div class="projects-group">
+            <div class="projects-group-header">
+                <h2 class="block-title"><span>02</span>Personal Projects</h2>
+                <p>Independent apps and tools</p>
+            </div>
+            <div class="projects-grid">
+<div class="project-card" onclick="openProject('listworth')" data-category="personal">
 <div class="project-image-wrapper">
 <div class="project-image" style="background-image: url('assets/projects/listworth/hero.webp'); background-size: cover; background-position: center;"></div>
 <div class="project-overlay"></div>
@@ -337,6 +351,15 @@
 <div class="read-more-link">View Project &rarr;</div>
 </div>
 </div>
+            </div>
+        </div>
+
+        <div class="projects-group">
+            <div class="projects-group-header">
+                <h2 class="block-title"><span>03</span>Selected Work</h2>
+                <p>Password-protected professional projects</p>
+            </div>
+            <div class="projects-grid">
 <form class="projects-gate" id="projectsGate">
             <svg class="gate-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
             <p class="eyebrow">Private</p>
@@ -346,6 +369,7 @@
             <button type="submit" class="contact-button primary" id="projectsUnlock">Unlock</button>
             <p class="gate-status" id="projectsStatus" role="status" aria-live="polite"></p>
         </form>
+            </div>
         </div>
     
     </section>
