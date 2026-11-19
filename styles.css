@@ -2483,52 +2483,84 @@ header a:hover::after, header a.active::after {
     .lightbox-close { top: 16px; right: 20px; }
 }
 
-/* Projects password gate: centered card, same sheet look as the message panel */
+/* Projects password gate: compact full-width bar above the public projects */
 .projects-gate {
+    grid-column: 1 / -1;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 14px 24px;
     margin: 0;
-    padding: 32px;
-    text-align: center;
+    padding: 18px 24px;
     background: #222622;
     border: 1px solid rgba(163, 197, 133, 0.25);
     border-radius: 12px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
 }
 .projects-gate[hidden] { display: none; }
-.projects-gate h2 { margin: 0 0 10px; font-size: 1.5em; }
+.gate-copy {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
 .gate-icon {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 16px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
     fill: none;
     stroke: #A3C585;
-    stroke-width: 1.6;
+    stroke-width: 1.75;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
-.gate-note { margin: 0 0 24px; color: rgba(255, 255, 255, 0.65); line-height: 1.6; }
+.gate-note {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.98em;
+    line-height: 1.45;
+}
+.gate-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
 .projects-gate input {
-    width: 100%;
+    width: 220px;
     box-sizing: border-box;
-    margin-bottom: 14px;
-    padding: 14px 18px;
+    margin: 0;
+    padding: 10px 16px;
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 50px;
     background: rgba(255, 255, 255, 0.04);
     color: #fff;
     font-family: inherit;
-    font-size: 1em;
-    text-align: center;
+    font-size: 0.95em;
 }
-.projects-gate input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.projects-gate input::placeholder { color: rgba(255, 255, 255, 0.45); }
 .projects-gate input:focus-visible { outline: 2px solid #A3C585; outline-offset: 2px; border-color: transparent; }
-.projects-gate .contact-button { width: 100%; }
+.projects-gate .contact-button {
+    width: auto;
+    padding: 10px 22px;
+    font-size: 0.95em;
+    white-space: nowrap;
+}
 .projects-gate .contact-button:disabled { opacity: 0.6; cursor: progress; }
-.gate-status { min-height: 1.4em; margin: 14px 0 0; font-size: 0.9em; color: rgba(255, 255, 255, 0.6); }
+.gate-status {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 0.88em;
+    color: rgba(255, 255, 255, 0.65);
+}
+.gate-status:empty { display: none; }
 .gate-status.error { color: #e0907e; }
+@media (max-width: 768px) {
+    .projects-gate { padding: 16px 18px; }
+    .gate-controls { width: 100%; }
+    .projects-gate input { flex: 1; width: auto; min-width: 0; }
+}
 
 /* Project modal video: native 16:9, never cropped, with click-to-play cover */
 .modal-video-wrap {
@@ -2633,10 +2665,10 @@ header a:hover::after, header a.active::after {
     transform: translateY(-2px);
 }
 
-/* Projects page subsections (01 AEC Tech Hackathons / 02 Personal Projects) */
+/* Projects page subsections (01 Selected Work / 02 AEC Tech Hackathons / 03 Personal Projects) */
 .projects-group + .projects-group {
-    margin-top: 56px;
-    padding-top: 40px;
+    margin-top: 44px;
+    padding-top: 34px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
