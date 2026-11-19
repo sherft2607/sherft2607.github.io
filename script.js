@@ -42,6 +42,46 @@ const projectData = {
         ],
         "description": "<p>Started at the AEC Tech Chicago Hackathon 2026, throwShade is Beli for architecture: a social app for logging, rating, and sharing the buildings, bridges, public art, and spaces you visit. You get a personal architecture log, a chronological feed of what friends actually thought, and a worldwide map built on open data with no ads and no ranking algorithm.</p><p><strong>Log and discover</strong></p><ul><li><strong>Rate any place you visit:</strong> Score buildings 1 to 5 stars with notes, standout tags, and up to four synced photos.</li><li><strong>Worldwide live map:</strong> Buildings stream in from Wikipedia and Wikidata as you pan, with architectural style pins, a friends overlay, filters, and a heatmap combining app visits with Wikipedia interest.</li><li><strong>Walk near me and camera scan:</strong> Generate short architecture walking routes around you, or point your phone at a building using GPS and the compass to identify and log it on the spot.</li><li><strong>Rich building pages:</strong> Photos, Wikipedia intros, landmark and Pritzker facts, live weather, an hourly typical busyness chart, and nearby works by the same architect.</li></ul><p><strong>Social and play</strong></p><ul><li><strong>Feed, stories, and Head-to-Head:</strong> Friends' logs with hearts and comments, 24-hour photo stories, taste-match follow suggestions, shared lists with crawl routes, and side-by-side comparisons of where you agree or clash.</li><li><strong>Daily Shade, City Bingo, and Collections:</strong> Guess the daily building from a zoomed-in photo in five tries, complete 4x4 City Bingo cards and weekly challenges, and collect every building by an architect from Wikidata to earn Fan, Devotee, and Completist badges.</li></ul><p><strong>How I built it</strong></p><ul><li>Built as a zero-framework HTML, CSS, and JavaScript PWA with a service worker for offline caching, hosted on GitHub Pages and packaged as an Android Trusted Web Activity.</li><li>Backed by FastAPI and PostgreSQL on Render for accounts, private profiles, sessions, ratings, photos, stories, lists, and game scores.</li><li>Powered by open data from Wikidata, Wikipedia, Wikimedia Commons, OpenStreetMap, and Open-Meteo.</li></ul><p><strong>Tools Used:</strong> HTML, CSS, JavaScript, FastAPI, PostgreSQL, Render, Leaflet, OpenStreetMap, Wikidata, Wikipedia, Android TWA.</p><p><a href=\"https://shandonherft.com/ThrowShade/app/\" target=\"_blank\" rel=\"noopener\">Open the live app &rarr;</a> &nbsp; <a href=\"https://github.com/sherft2607/ThrowShade\" target=\"_blank\" rel=\"noopener\">View on GitHub &rarr;</a></p>"
     },
+    "monkeys-on-keyboards": {
+        "title": "Monkeys on Keyboards",
+        "image": "assets/projects/monkeys-on-keyboards/hero.webp",
+        "video": "assets/projects/monkeys-on-keyboards/demo.mp4",
+        "gallery": [
+            "assets/projects/monkeys-on-keyboards/playground.webp",
+            "assets/projects/monkeys-on-keyboards/castle.webp",
+            "assets/projects/monkeys-on-keyboards/git-graph.webp"
+        ],
+        "tags": [
+            "Next.js",
+            "React Three Fiber",
+            "Three.js",
+            "FAL AI",
+            "Jotai",
+            "Tailwind CSS"
+        ],
+        "description": "<p>Built at the AEC Tech Boston Hackathon 2025 with a large group of architects, engineers, and creative developers, Monkeys on Keyboards is a collaborative 3D interactive canvas with AI-powered image generation. The idea was to treat building AEC web tools like a live jam session: everyone branched off the same Next.js and React Three Fiber workspace and merged features in parallel into one playful 3D sandbox.</p><p><strong>What it does</strong></p><ul><li><strong>Interactive 3D canvas:</strong> Create and manipulate primitive geometries, preset towers and castles, procedural terrain, and animated scenes using orbit controls, perspective and orthographic views, and G/R/S transform gizmos.</li><li><strong>CAD and Rhino matrix integration:</strong> Paste 4x4 transformation matrices exported from Rhino or other CAD tools to drive live instanced cube assemblies and preset sculptures.</li><li><strong>AEC visualization and simulation:</strong> Switch between Arctic, Transparent, and Lineweight display modes, adjust materials (matte, metallic, glass), geolocate objects by coordinates, and simulate phased construction scenes with day/night lighting.</li><li><strong>Live 3D-to-AI rendering:</strong> Capture the live WebGL viewport and send it to FAL AI (FLUX Pro Kontext and FLUX Dev image-to-image) with custom prompts, then overlay and compare the generated renders against the 3D scene.</li></ul><p><strong>Tools Used:</strong> Next.js, React Three Fiber, Three.js, React Three Drei, Jotai, FAL AI (FLUX), Radix UI, Tailwind CSS.</p><p><a href=\"https://github.com/pwluke/monkeys-on-keyboards\" target=\"_blank\" rel=\"noopener\">View on GitHub &rarr;</a></p>"
+    },
+    "emergence": {
+        "title": "Emergence",
+        "image": "assets/projects/emergence/hero.webp",
+        "video": "assets/projects/emergence/demo.mp4",
+        "gallery": [
+            "assets/projects/emergence/dome-game.webp",
+            "assets/projects/emergence/wasp-rules.webp",
+            "assets/projects/emergence/wasp-raven.webp",
+            "assets/projects/emergence/ue-blueprint.webp",
+            "assets/projects/emergence/workflow.webp"
+        ],
+        "tags": [
+            "Unreal Engine 5",
+            "Rhino 8",
+            "Grasshopper",
+            "Wasp",
+            "WebSockets",
+            "Datasmith"
+        ],
+        "description": "<p>Built at the AEC Tech NYC 2025 Hackathon with a multidisciplinary team and Epic Games Solution Architect Stephen Phillips, Emergence is a computational design game inspired by Wave Function Collapse and cellular automata. Instead of asking newcomers to wrestle with tangled Grasshopper graphs, Emergence wraps modular 3D aggregation in a game-like interface where players pick a primitive, tune transform and connection rules, and grow structures toward spatial goals like building a dome.</p><p><strong>How it works</strong></p><ul><li><strong>Gamified computational design:</strong> Replaces complex node graphs with intuitive controls for primitive selection, connection rules, and geometric transforms (pivot, shear, helix, torsion, bend) scored against target forms.</li><li><strong>Discrete aggregation in Rhino and Wasp:</strong> Explores stochastic and rule-driven modular assemblies in Rhino 8 and Grasshopper using Wasp, with Raven AI assisting rapid script iteration across multiple aggregation variants.</li><li><strong>Real-time Unreal Engine 5 bridge:</strong> Streams JSON parameters from Grasshopper over WebSockets (Bengesht) into Unreal Engine 5 Blueprints, UMG menus, PCG, and Datasmith live sync.</li></ul><p><strong>Tools Used:</strong> Unreal Engine 5, Rhino 8, Grasshopper, Wasp, Bengesht (WebSockets), Datasmith, UE Blueprints &amp; PCG.</p><p><a href=\"https://docs.google.com/presentation/d/116ZxwRNredzSTBqgJfK1p-gpd2oqnCbz6ifcA48HElQ/edit?usp=sharing\" target=\"_blank\" rel=\"noopener\">View presentation slides &rarr;</a> &nbsp; <a href=\"https://github.com/3DStephen/Emergence\" target=\"_blank\" rel=\"noopener\">View on GitHub &rarr;</a></p>"
+    },
     "listworth": {
         "title": "ListWorth",
         "image": "assets/projects/listworth/hero.webp",
