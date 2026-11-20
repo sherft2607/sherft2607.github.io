@@ -2698,3 +2698,15 @@ header a:hover::after, header a.active::after {
     }
 }
 
+/* Flagship Training Series spotlight inside 01 Selected Work */
+.work-spotlight {
+    grid-column: 1 / -1;
+    margin-bottom: 8px;
+    border-color: rgba(163, 197, 133, 0.28);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.work-spotlight .featured-media {
+    cursor: pointer;
+}
+
