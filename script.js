@@ -647,6 +647,45 @@ function createTurntable(canvas, modelData, options = {}) {
     const spheres = modelData.spheres || null;
     const hasSpheres = !!(spheres && spheres.length >= 5);
 
+    let nTris = 0, fPos = null, fCol = null, fNorm = null, fDepth = null, fProj = null, fShade = null, fOrder = null, shadeLut = null;
+    if (hasFaces) {
+        nTris = (faces.length / 10) | 0;
+        fPos = new Float32Array(nTris * 9);
+        fCol = new Uint8Array(nTris);
+        fNorm = new Float32Array(nTris * 3);
+        fDepth = new Float32Array(nTris);
+        fProj = new Float32Array(nTris * 6);
+        fShade = new Uint8Array(nTris);
+        fOrder = new Int32Array(nTris);
+        for (let t = 0; t < nTris; t++) {
+            const b = t * 10, p = t * 9, n = t * 3;
+            fCol[t] = faces[b];
+            const x1 = faces[b + 1] * 0.001, y1 = faces[b + 2] * 0.001, z1 = faces[b + 3] * 0.001;
+            const x2 = faces[b + 4] * 0.001, y2 = faces[b + 5] * 0.001, z2 = faces[b + 6] * 0.001;
+            const x3 = faces[b + 7] * 0.001, y3 = faces[b + 8] * 0.001, z3 = faces[b + 9] * 0.001;
+            fPos[p] = x1; fPos[p + 1] = y1; fPos[p + 2] = z1;
+            fPos[p + 3] = x2; fPos[p + 4] = y2; fPos[p + 5] = z2;
+            fPos[p + 6] = x3; fPos[p + 7] = y3; fPos[p + 8] = z3;
+            const ux = x2 - x1, uy = y2 - y1, uz = z2 - z1;
+            const vx = x3 - x1, vy = y3 - y1, vz = z3 - z1;
+            let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+            const nlen = Math.hypot(nx, ny, nz) || 1;
+            fNorm[n] = nx / nlen; fNorm[n + 1] = ny / nlen; fNorm[n + 2] = nz / nlen;
+            fOrder[t] = t;
+        }
+        const nPal = Math.max(paletteRgb.length, 1);
+        shadeLut = new Array(nPal);
+        for (let c = 0; c < nPal; c++) {
+            const rgb = paletteRgb[c] || [159, 192, 128];
+            const row = new Array(32);
+            for (let k = 0; k < 32; k++) {
+                const lit = 0.42 + 0.58 * (k / 31);
+                row[k] = `rgb(${Math.round(rgb[0] * lit)},${Math.round(rgb[1] * lit)},${Math.round(rgb[2] * lit)})`;
+            }
+            shadeLut[c] = row;
+        }
+    }
+
     const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 768;
     const wrap = options.wrap || null;
 
@@ -731,12 +770,15 @@ function createTurntable(canvas, modelData, options = {}) {
 
         if (hasFaces) {
             if (shaded) {
-                const tris = [];
-                for (let i = 0; i < faces.length; i += 10) {
-                    const cidx = faces[i];
-                    const x1 = faces[i + 1] * 0.001, y1 = faces[i + 2] * 0.001, z1 = faces[i + 3] * 0.001;
-                    const x2 = faces[i + 4] * 0.001, y2 = faces[i + 5] * 0.001, z2 = faces[i + 6] * 0.001;
-                    const x3 = faces[i + 7] * 0.001, y3 = faces[i + 8] * 0.001, z3 = faces[i + 9] * 0.001;
+                const ly1 = 0.65 * se - 0.67 * ce;
+                const lz = 0.65 * ce + 0.67 * se;
+                const lx = 0.35 * ca + ly1 * sa;
+                const ly = -0.35 * sa + ly1 * ca;
+                for (let t = 0; t < nTris; t++) {
+                    const p = t * 9, q = t * 6, n = t * 3;
+                    const x1 = fPos[p], y1 = fPos[p + 1], z1 = fPos[p + 2];
+                    const x2 = fPos[p + 3], y2 = fPos[p + 4], z2 = fPos[p + 5];
+                    const x3 = fPos[p + 6], y3 = fPos[p + 7], z3 = fPos[p + 8];
 
                     const ax1 = x1 * ca - y1 * sa, ay1 = x1 * sa + y1 * ca;
                     const ay2 = ay1 * se + z1 * ce, az2 = -ay1 * ce + z1 * se;
@@ -750,37 +792,31 @@ function createTurntable(canvas, modelData, options = {}) {
                     const cy2 = cy1 * se + z3 * ce, cz2 = -cy1 * ce + z3 * se;
                     const fc = persp / Math.max(persp - cz2, 0.5);
 
-                    const ux = bx1 - ax1, uy = by2 - ay2, uz = bz2 - az2;
-                    const vx = cx1 - ax1, vy = cy2 - ay2, vz = cz2 - az2;
-                    let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
-                    const nlen = Math.hypot(nx, ny, nz) || 1;
-                    nx /= nlen; ny /= nlen; nz /= nlen;
-                    const lit = 0.42 + 0.58 * Math.abs(nx * 0.35 + ny * 0.65 + nz * 0.67);
+                    fProj[q] = cx + ax1 * fa * scale;     fProj[q + 1] = cy - ay2 * fa * scale;
+                    fProj[q + 2] = cx + bx1 * fb * scale; fProj[q + 3] = cy - by2 * fb * scale;
+                    fProj[q + 4] = cx + cx1 * fc * scale; fProj[q + 5] = cy - cy2 * fc * scale;
+                    fDepth[t] = (az2 + bz2 + cz2) * 0.3333;
 
-                    tris.push([
-                        (az2 + bz2 + cz2) * 0.3333,
-                        cidx, lit,
-                        cx + ax1 * fa * scale, cy - ay2 * fa * scale,
-                        cx + bx1 * fb * scale, cy - by2 * fb * scale,
-                        cx + cx1 * fc * scale, cy - cy2 * fc * scale
-                    ]);
+                    const dot = Math.abs(fNorm[n] * lx + fNorm[n + 1] * ly + fNorm[n + 2] * lz);
+                    fShade[t] = Math.min(31, (dot * 31 + 0.5) | 0);
                 }
-                tris.sort((a, b) => a[0] - b[0]);
-                ctx.lineWidth = 0.6 * dpr;
-                ctx.lineJoin = 'round';
-                for (const t of tris) {
-                    const rgb = paletteRgb[t[1]] || [159, 192, 128];
-                    const l = t[2];
-                    const col = `rgb(${Math.round(rgb[0] * l)},${Math.round(rgb[1] * l)},${Math.round(rgb[2] * l)})`;
-                    ctx.fillStyle = col;
-                    ctx.strokeStyle = col;
+                fOrder.sort((a, b) => fDepth[a] - fDepth[b]);
+                let lastCol = '';
+                for (let i = 0; i < nTris; i++) {
+                    const t = fOrder[i];
+                    const row = shadeLut[fCol[t]] || shadeLut[0];
+                    const col = row[fShade[t]];
+                    if (col !== lastCol) {
+                        ctx.fillStyle = col;
+                        lastCol = col;
+                    }
+                    const q = t * 6;
                     ctx.beginPath();
-                    ctx.moveTo(t[3], t[4]);
-                    ctx.lineTo(t[5], t[6]);
-                    ctx.lineTo(t[7], t[8]);
+                    ctx.moveTo(fProj[q], fProj[q + 1]);
+                    ctx.lineTo(fProj[q + 2], fProj[q + 3]);
+                    ctx.lineTo(fProj[q + 4], fProj[q + 5]);
                     ctx.closePath();
                     ctx.fill();
-                    ctx.stroke();
                 }
             } else {
                 ctx.lineWidth = 0.8 * dpr;
