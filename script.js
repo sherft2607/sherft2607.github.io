@@ -628,12 +628,22 @@ document.addEventListener('keydown', function(event) {
 // --- INTERACTIVE 3D WIREFRAME TURNTABLE ---
 let activeModalTurntable = null;
 
+function parseHexRgb(hex) {
+    if (!hex || typeof hex !== 'string') return [159, 192, 128];
+    const h = hex.replace('#', '');
+    if (h.length < 6) return [159, 192, 128];
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+
 function createTurntable(canvas, modelData, options = {}) {
     const ctx = canvas.getContext('2d');
     const interactive = !!options.interactive;
     const palette = modelData.palette || [];
+    const paletteRgb = palette.map(parseHexRgb);
     const groups = modelData.groups || {};
     const groupKeys = Object.keys(groups).map(Number).sort((a, b) => a - b);
+    const faces = modelData.faces || null;
+    const hasFaces = !!(faces && faces.length >= 10);
 
     const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 768;
     const wrap = options.wrap || null;
@@ -643,6 +653,7 @@ function createTurntable(canvas, modelData, options = {}) {
     let zoom = options.zoom ?? (interactive ? (modelData.modalZoom ?? 1.32) : (modelData.inlineZoom ?? 1.48));
     let spinning = true;
     let showGrids = options.showGrids ?? !!modelData.defaultGrids;
+    let shaded = hasFaces;
     let engaged = !isTouch;
     const pointers = new Map();
     let lastPinchDist = null;
@@ -715,6 +726,88 @@ function createTurntable(canvas, modelData, options = {}) {
         }
         ctx.stroke();
         ctx.restore();
+
+        if (hasFaces) {
+            if (shaded) {
+                const tris = [];
+                for (let i = 0; i < faces.length; i += 10) {
+                    const cidx = faces[i];
+                    const x1 = faces[i + 1] * 0.001, y1 = faces[i + 2] * 0.001, z1 = faces[i + 3] * 0.001;
+                    const x2 = faces[i + 4] * 0.001, y2 = faces[i + 5] * 0.001, z2 = faces[i + 6] * 0.001;
+                    const x3 = faces[i + 7] * 0.001, y3 = faces[i + 8] * 0.001, z3 = faces[i + 9] * 0.001;
+
+                    const ax1 = x1 * ca - y1 * sa, ay1 = x1 * sa + y1 * ca;
+                    const ay2 = ay1 * se + z1 * ce, az2 = -ay1 * ce + z1 * se;
+                    const fa = persp / Math.max(persp - az2, 0.5);
+
+                    const bx1 = x2 * ca - y2 * sa, by1 = x2 * sa + y2 * ca;
+                    const by2 = by1 * se + z2 * ce, bz2 = -by1 * ce + z2 * se;
+                    const fb = persp / Math.max(persp - bz2, 0.5);
+
+                    const cx1 = x3 * ca - y3 * sa, cy1 = x3 * sa + y3 * ca;
+                    const cy2 = cy1 * se + z3 * ce, cz2 = -cy1 * ce + z3 * se;
+                    const fc = persp / Math.max(persp - cz2, 0.5);
+
+                    const ux = bx1 - ax1, uy = by2 - ay2, uz = bz2 - az2;
+                    const vx = cx1 - ax1, vy = cy2 - ay2, vz = cz2 - az2;
+                    let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+                    const nlen = Math.hypot(nx, ny, nz) || 1;
+                    nx /= nlen; ny /= nlen; nz /= nlen;
+                    const lit = 0.42 + 0.58 * Math.abs(nx * 0.35 + ny * 0.65 + nz * 0.67);
+
+                    tris.push([
+                        (az2 + bz2 + cz2) * 0.3333,
+                        cidx, lit,
+                        cx + ax1 * fa * scale, cy - ay2 * fa * scale,
+                        cx + bx1 * fb * scale, cy - by2 * fb * scale,
+                        cx + cx1 * fc * scale, cy - cy2 * fc * scale
+                    ]);
+                }
+                tris.sort((a, b) => a[0] - b[0]);
+                ctx.lineWidth = 0.6 * dpr;
+                ctx.lineJoin = 'round';
+                for (const t of tris) {
+                    const rgb = paletteRgb[t[1]] || [159, 192, 128];
+                    const l = t[2];
+                    const col = `rgb(${Math.round(rgb[0] * l)},${Math.round(rgb[1] * l)},${Math.round(rgb[2] * l)})`;
+                    ctx.fillStyle = col;
+                    ctx.strokeStyle = col;
+                    ctx.beginPath();
+                    ctx.moveTo(t[3], t[4]);
+                    ctx.lineTo(t[5], t[6]);
+                    ctx.lineTo(t[7], t[8]);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            } else {
+                ctx.lineWidth = 0.8 * dpr;
+                ctx.globalAlpha = 0.55;
+                for (let i = 0; i < faces.length; i += 10) {
+                    const cidx = faces[i];
+                    ctx.strokeStyle = palette[cidx] || '#9fc080';
+                    const x1 = faces[i + 1] * 0.001, y1 = faces[i + 2] * 0.001, z1 = faces[i + 3] * 0.001;
+                    const x2 = faces[i + 4] * 0.001, y2 = faces[i + 5] * 0.001, z2 = faces[i + 6] * 0.001;
+                    const x3 = faces[i + 7] * 0.001, y3 = faces[i + 8] * 0.001, z3 = faces[i + 9] * 0.001;
+                    const ax1 = x1 * ca - y1 * sa, ay1 = x1 * sa + y1 * ca;
+                    const ay2 = ay1 * se + z1 * ce, az2 = -ay1 * ce + z1 * se;
+                    const fa = persp / Math.max(persp - az2, 0.5);
+                    const bx1 = x2 * ca - y2 * sa, by1 = x2 * sa + y2 * ca;
+                    const by2 = by1 * se + z2 * ce, bz2 = -by1 * ce + z2 * se;
+                    const fb = persp / Math.max(persp - bz2, 0.5);
+                    const cx1 = x3 * ca - y3 * sa, cy1 = x3 * sa + y3 * ca;
+                    const cy2 = cy1 * se + z3 * ce, cz2 = -cy1 * ce + z3 * se;
+                    const fc = persp / Math.max(persp - cz2, 0.5);
+                    ctx.beginPath();
+                    ctx.moveTo(cx + ax1 * fa * scale, cy - ay2 * fa * scale);
+                    ctx.lineTo(cx + bx1 * fb * scale, cy - by2 * fb * scale);
+                    ctx.lineTo(cx + cx1 * fc * scale, cy - cy2 * fc * scale);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+            }
+        }
 
         const weights = modelData.weights;
         const alphas = modelData.alphas;
@@ -829,6 +922,7 @@ function createTurntable(canvas, modelData, options = {}) {
     return {
         toggleSpin() { spinning = !spinning; return spinning; },
         toggleGrids() { showGrids = !showGrids; return showGrids; },
+        toggleShade() { shaded = !shaded; return shaded; },
         setEngaged(on) { engaged = !!on; pointers.clear(); lastPinchDist = null; applyEngagedUI(); return engaged; },
         isEngaged() { return engaged; },
         reset() { az = -0.68; el = modelData.defaultEl ?? 0.48; zoom = interactive ? (modelData.modalZoom ?? 1.32) : (modelData.inlineZoom ?? 1.48); spinning = true; },
@@ -905,6 +999,7 @@ function openProject(projectId) {
         mainImg.style.display = 'none';
         const spinBtn = document.getElementById('ttToggleSpin');
         const gridBtn = document.getElementById('ttToggleGrids');
+        const shadeBtn = document.getElementById('ttToggleShade');
         const resetBtn = document.getElementById('ttResetView');
         const interactBtn = document.getElementById('ttInteractBtn');
         const badge = document.getElementById('ttBadge');
@@ -921,9 +1016,15 @@ function openProject(projectId) {
             }
         };
         const hasGrids = !!(data.turntable.groups && data.turntable.groups['9'] && data.turntable.groups['9'].length);
+        const hasFaces = !!(data.turntable.faces && data.turntable.faces.length >= 10);
         spinBtn.textContent = 'Pause';
         gridBtn.hidden = !hasGrids;
         gridBtn.classList.toggle('active', hasGrids && !!data.turntable.defaultGrids);
+        if (shadeBtn) {
+            shadeBtn.hidden = !hasFaces;
+            shadeBtn.textContent = 'Wireframe';
+            shadeBtn.classList.remove('active');
+        }
         setTimeout(() => {
             activeModalTurntable = createTurntable(ttCanvas, data.turntable, {
                 interactive: true,
@@ -934,6 +1035,13 @@ function openProject(projectId) {
             if (interactBtn) {
                 interactBtn.onclick = () => {
                     activeModalTurntable.setEngaged(!activeModalTurntable.isEngaged());
+                };
+            }
+            if (shadeBtn) {
+                shadeBtn.onclick = () => {
+                    const isShaded = activeModalTurntable.toggleShade();
+                    shadeBtn.textContent = isShaded ? 'Wireframe' : 'Shaded';
+                    shadeBtn.classList.toggle('active', !isShaded);
                 };
             }
             spinBtn.onclick = () => {
