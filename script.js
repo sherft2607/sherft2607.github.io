@@ -644,6 +644,8 @@ function createTurntable(canvas, modelData, options = {}) {
     const groupKeys = Object.keys(groups).map(Number).sort((a, b) => a - b);
     const faces = modelData.faces || null;
     const hasFaces = !!(faces && faces.length >= 10);
+    const spheres = modelData.spheres || null;
+    const hasSpheres = !!(spheres && spheres.length >= 5);
 
     const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 768;
     const wrap = options.wrap || null;
@@ -843,6 +845,44 @@ function createTurntable(canvas, modelData, options = {}) {
             ctx.stroke();
         }
         ctx.globalAlpha = 1;
+
+        if (hasSpheres) {
+            const sp = [];
+            for (let i = 0; i < spheres.length; i += 5) {
+                const cidx = spheres[i];
+                const sx3 = spheres[i + 1] * 0.001, sy3 = spheres[i + 2] * 0.001, sz3 = spheres[i + 3] * 0.001;
+                const rBase = spheres[i + 4] * 0.1;
+                const x1 = sx3 * ca - sy3 * sa, y1 = sx3 * sa + sy3 * ca;
+                const y2 = y1 * se + sz3 * ce, z2 = -y1 * ce + sz3 * se;
+                const f = persp / Math.max(persp - z2, 0.5);
+                const px = cx + x1 * f * scale;
+                const py = cy - y2 * f * scale;
+                const rad = Math.max(1.5 * dpr, rBase * dpr * (0.75 + 0.35 * f) * Math.min(1.3, Math.sqrt(zoom)));
+                sp.push([z2, cidx, px, py, rad]);
+            }
+            sp.sort((a, b) => a[0] - b[0]);
+            for (const s of sp) {
+                const col = palette[s[1]] || '#e8695c';
+                const px = s[2], py = s[3], rad = s[4];
+                if (rad >= 3.8 * dpr) {
+                    ctx.globalAlpha = 0.24;
+                    ctx.fillStyle = col;
+                    ctx.beginPath();
+                    ctx.arc(px, py, rad * 1.45, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 0.94;
+                ctx.fillStyle = col;
+                ctx.beginPath();
+                ctx.arc(px, py, rad, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 0.72;
+                ctx.strokeStyle = '#f2f5ef';
+                ctx.lineWidth = 0.75 * dpr;
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+        }
         rafId = requestAnimationFrame(draw);
     }
 
