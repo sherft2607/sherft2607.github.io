@@ -371,6 +371,7 @@ projectsGate.addEventListener('submit', async (event) => {
         Object.assign(projectData, data);
         projectsGate.insertAdjacentHTML('beforebegin', html);
         bindProjectCards();
+        initInlineTurntables();
         projectsGate.hidden = true;
     } catch (err) {
         status.classList.add('error');
@@ -624,6 +625,239 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+// --- INTERACTIVE 3D WIREFRAME TURNTABLE ---
+let activeModalTurntable = null;
+
+function createTurntable(canvas, modelData, options = {}) {
+    const ctx = canvas.getContext('2d');
+    const interactive = !!options.interactive;
+    const palette = modelData.palette || [];
+    const groups = modelData.groups || {};
+    const groupKeys = Object.keys(groups).map(Number).sort((a, b) => a - b);
+
+    const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 768;
+    const wrap = options.wrap || null;
+
+    let az = options.az ?? -0.68;
+    let el = options.el ?? modelData.defaultEl ?? 0.48;
+    let zoom = options.zoom ?? (interactive ? (modelData.modalZoom ?? 1.32) : (modelData.inlineZoom ?? 1.48));
+    let spinning = true;
+    let showGrids = options.showGrids ?? !!modelData.defaultGrids;
+    let engaged = !isTouch;
+    const pointers = new Map();
+    let lastPinchDist = null;
+    let downPos = null;
+    let visible = true;
+    let rafId = null;
+
+    function applyEngagedUI() {
+        canvas.classList.toggle('is-engaged', engaged);
+        if (wrap) wrap.classList.toggle('is-engaged', engaged);
+        if (options.onEngageChange) options.onEngageChange(engaged);
+    }
+    if (interactive) applyEngagedUI();
+
+    function resize() {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = Math.round(rect.width * dpr);
+        const h = Math.round(rect.height * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+            canvas.width = w;
+            canvas.height = h;
+        }
+    }
+
+    function draw() {
+        if (!visible) {
+            rafId = null;
+            return;
+        }
+        resize();
+        const w = canvas.width, h = canvas.height;
+        if (!w || !h) {
+            rafId = requestAnimationFrame(draw);
+            return;
+        }
+        if (spinning && pointers.size === 0) az += 0.0045;
+
+        ctx.clearRect(0, 0, w, h);
+
+        const ca = Math.cos(az), sa = Math.sin(az);
+        const ce = Math.cos(el), se = Math.sin(el);
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const scale = Math.min(w, h) * 0.62 * zoom;
+        const persp = 3.2;
+        const cx = w * 0.5;
+        const cy = h * 0.53;
+
+        // Subtle turntable ring under the bowl
+        ctx.save();
+        ctx.strokeStyle = 'rgba(159, 192, 128, 0.14)';
+        ctx.lineWidth = 1.2 * dpr;
+        ctx.beginPath();
+        const ringR = 0.92;
+        for (let i = 0; i <= 64; i++) {
+            const ang = (i / 64) * Math.PI * 2;
+            const rx = Math.cos(ang) * ringR;
+            const ry = Math.sin(ang) * ringR;
+            const rz = -0.22;
+            const x1 = rx * ca - ry * sa;
+            const y1 = rx * sa + ry * ca;
+            const y2 = y1 * se + rz * ce;
+            const z2 = -y1 * ce + rz * se;
+            const f = persp / Math.max(persp - z2, 0.5);
+            const sx = cx + x1 * f * scale;
+            const sy = cy - y2 * f * scale;
+            if (i === 0) ctx.moveTo(sx, sy);
+            else ctx.lineTo(sx, sy);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        const weights = modelData.weights;
+        const alphas = modelData.alphas;
+        for (const cidx of groupKeys) {
+            if (cidx === 9 && !showGrids) continue;
+            const arr = groups[String(cidx)];
+            if (!arr || !arr.length) continue;
+            const isRaker = cidx >= 2 && cidx <= 8;
+            ctx.strokeStyle = palette[cidx] || '#9fc080';
+            ctx.globalAlpha = (alphas && alphas[cidx] != null) ? alphas[cidx] : (cidx === 0 ? 0.42 : (cidx === 1 ? 0.62 : (cidx === 9 ? 0.45 : 0.98)));
+            ctx.lineWidth = ((weights && weights[cidx] != null) ? weights[cidx] : (isRaker ? 2.8 : (cidx === 1 ? 1.25 : 0.95))) * dpr;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            for (let i = 0; i < arr.length; i += 6) {
+                const ax = arr[i] * 0.001, ay = arr[i + 1] * 0.001, azp = arr[i + 2] * 0.001;
+                const bx = arr[i + 3] * 0.001, by = arr[i + 4] * 0.001, bzp = arr[i + 5] * 0.001;
+
+                const ax1 = ax * ca - ay * sa;
+                const ay1 = ax * sa + ay * ca;
+                const ay2 = ay1 * se + azp * ce;
+                const az2 = -ay1 * ce + azp * se;
+                const fa = persp / Math.max(persp - az2, 0.5);
+
+                const bx1 = bx * ca - by * sa;
+                const by1 = bx * sa + by * ca;
+                const by2 = by1 * se + bzp * ce;
+                const bz2 = -by1 * ce + bzp * se;
+                const fb = persp / Math.max(persp - bz2, 0.5);
+
+                ctx.moveTo(cx + ax1 * fa * scale, cy - ay2 * fa * scale);
+                ctx.lineTo(cx + bx1 * fb * scale, cy - by2 * fb * scale);
+            }
+            ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        rafId = requestAnimationFrame(draw);
+    }
+
+    function start() {
+        if (!rafId && visible) rafId = requestAnimationFrame(draw);
+    }
+
+    let io = null;
+    if ('IntersectionObserver' in window) {
+        io = new IntersectionObserver(([entry]) => {
+            visible = entry.isIntersecting;
+            if (visible) start();
+            else if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        });
+        io.observe(canvas);
+    }
+
+    function getPinchDist() {
+        const pts = Array.from(pointers.values());
+        if (pts.length < 2) return null;
+        return Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+    }
+
+    const onDown = (e) => {
+        if (!engaged) {
+            downPos = { x: e.clientX, y: e.clientY };
+            return;
+        }
+        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pointers.size === 2) lastPinchDist = getPinchDist();
+        canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId);
+    };
+    const onMove = (e) => {
+        if (!engaged || !pointers.has(e.pointerId)) return;
+        const prev = pointers.get(e.pointerId);
+        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pointers.size === 1) {
+            az += (e.clientX - prev.x) * 0.008;
+            el = Math.max(-0.2, Math.min(1.45, el + (e.clientY - prev.y) * 0.007));
+        } else if (pointers.size === 2) {
+            const dist = getPinchDist();
+            if (dist && lastPinchDist && lastPinchDist > 4) {
+                zoom = Math.max(0.65, Math.min(2.4, zoom * (dist / lastPinchDist)));
+            }
+            lastPinchDist = dist;
+        }
+    };
+    const onUp = (e) => {
+        if (!engaged && downPos) {
+            const moved = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
+            downPos = null;
+            if (moved < 8) {
+                engaged = true;
+                applyEngagedUI();
+            }
+            return;
+        }
+        pointers.delete(e.pointerId);
+        if (pointers.size < 2) lastPinchDist = null;
+    };
+    const onWheel = (e) => {
+        if (!engaged) return;
+        e.preventDefault();
+        zoom = Math.max(0.65, Math.min(2.4, zoom * (e.deltaY > 0 ? 0.92 : 1.08)));
+    };
+
+    if (interactive) {
+        canvas.addEventListener('pointerdown', onDown);
+        canvas.addEventListener('pointermove', onMove);
+        canvas.addEventListener('pointerup', onUp);
+        canvas.addEventListener('pointercancel', onUp);
+        canvas.addEventListener('wheel', onWheel, { passive: false });
+    }
+
+    start();
+
+    return {
+        toggleSpin() { spinning = !spinning; return spinning; },
+        toggleGrids() { showGrids = !showGrids; return showGrids; },
+        setEngaged(on) { engaged = !!on; pointers.clear(); lastPinchDist = null; applyEngagedUI(); return engaged; },
+        isEngaged() { return engaged; },
+        reset() { az = -0.68; el = modelData.defaultEl ?? 0.48; zoom = interactive ? (modelData.modalZoom ?? 1.32) : (modelData.inlineZoom ?? 1.48); spinning = true; },
+        destroy() {
+            visible = false;
+            if (rafId) cancelAnimationFrame(rafId);
+            if (io) io.disconnect();
+            if (interactive) {
+                canvas.removeEventListener('pointerdown', onDown);
+                canvas.removeEventListener('pointermove', onMove);
+                canvas.removeEventListener('pointerup', onUp);
+                canvas.removeEventListener('pointercancel', onUp);
+                canvas.removeEventListener('wheel', onWheel);
+            }
+        }
+    };
+}
+
+function initInlineTurntables() {
+    document.querySelectorAll('canvas[data-turntable]').forEach(canvas => {
+        if (canvas.dataset.ttReady) return;
+        const pid = canvas.dataset.turntable;
+        const data = projectData[pid];
+        if (!data || !data.turntable) return;
+        canvas.dataset.ttReady = '1';
+        createTurntable(canvas, data.turntable, { interactive: false });
+    });
+}
+
 // --- MODAL LOGIC (Projects) ---
 function openProject(projectId) {
     const data = projectData[projectId];
@@ -634,6 +868,13 @@ function openProject(projectId) {
 
     // Populate Main Info
     const mainImg = document.getElementById('modalImg');
+    const ttWrap = document.getElementById('modalTurntableWrap');
+    const ttCanvas = document.getElementById('modalTurntableCanvas');
+    if (activeModalTurntable) {
+        activeModalTurntable.destroy();
+        activeModalTurntable = null;
+    }
+
     // A video replaces the header image behind a click-to-play cover. No media at all shows text only.
     const videoWrap = document.getElementById('modalVideoWrap');
     const video = document.getElementById('modalVideo');
@@ -658,7 +899,60 @@ function openProject(projectId) {
         video.removeAttribute('src');
         videoCover.hidden = true;
     }
-    mainImg.style.display = data.image && !data.video ? '' : 'none';
+
+    if (ttWrap && data.turntable && !data.video) {
+        ttWrap.hidden = false;
+        mainImg.style.display = 'none';
+        const spinBtn = document.getElementById('ttToggleSpin');
+        const gridBtn = document.getElementById('ttToggleGrids');
+        const resetBtn = document.getElementById('ttResetView');
+        const interactBtn = document.getElementById('ttInteractBtn');
+        const badge = document.getElementById('ttBadge');
+        const isTouchUI = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 768;
+        const syncHud = (engaged) => {
+            if (interactBtn) {
+                interactBtn.textContent = engaged ? 'Done' : 'Interact 3D';
+                interactBtn.classList.toggle('active', engaged);
+            }
+            if (badge) {
+                badge.textContent = isTouchUI
+                    ? (engaged ? 'DRAG TO ORBIT · PINCH TO ZOOM' : 'LIVE 3D · TAP TO ORBIT')
+                    : 'LIVE 3D · DRAG TO ORBIT · SCROLL TO ZOOM';
+            }
+        };
+        const hasGrids = !!(data.turntable.groups && data.turntable.groups['9'] && data.turntable.groups['9'].length);
+        spinBtn.textContent = 'Pause';
+        gridBtn.hidden = !hasGrids;
+        gridBtn.classList.toggle('active', hasGrids && !!data.turntable.defaultGrids);
+        setTimeout(() => {
+            activeModalTurntable = createTurntable(ttCanvas, data.turntable, {
+                interactive: true,
+                wrap: ttWrap,
+                onEngageChange: syncHud
+            });
+            syncHud(activeModalTurntable.isEngaged());
+            if (interactBtn) {
+                interactBtn.onclick = () => {
+                    activeModalTurntable.setEngaged(!activeModalTurntable.isEngaged());
+                };
+            }
+            spinBtn.onclick = () => {
+                const on = activeModalTurntable.toggleSpin();
+                spinBtn.textContent = on ? 'Pause' : 'Spin';
+            };
+            gridBtn.onclick = () => {
+                const on = activeModalTurntable.toggleGrids();
+                gridBtn.classList.toggle('active', on);
+            };
+            resetBtn.onclick = () => {
+                activeModalTurntable.reset();
+                spinBtn.textContent = 'Pause';
+            };
+        }, 20);
+    } else {
+        if (ttWrap) ttWrap.hidden = true;
+        mainImg.style.display = data.image && !data.video ? '' : 'none';
+    }
     if (data.image) mainImg.src = data.image;
     mainImg.alt = data.title;
     
@@ -714,6 +1008,10 @@ function openProject(projectId) {
 
 function closeProjectModal() {
     document.getElementById('modalVideo').pause();
+    if (activeModalTurntable) {
+        activeModalTurntable.destroy();
+        activeModalTurntable = null;
+    }
     const modal = document.getElementById("projectModal");
     modal.style.display = "none";
     document.body.style.overflow = "auto";

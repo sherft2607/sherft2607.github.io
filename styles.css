@@ -2710,3 +2710,165 @@ header a:hover::after, header a.active::after {
     cursor: pointer;
 }
 
+/* Interactive 3D Wireframe Turntable (Spotlight Card & Modal) */
+.modal-turntable-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #141715;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 36px 36px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    user-select: none;
+}
+
+.turntable-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: pan-y;
+}
+
+.modal-turntable-wrap.is-engaged .turntable-canvas {
+    touch-action: none;
+}
+
+.modal-turntable-wrap.is-engaged {
+    box-shadow: inset 0 0 0 1.5px rgba(163, 197, 133, 0.45);
+}
+
+.turntable-canvas:active {
+    cursor: grabbing;
+}
+
+.featured-media .turntable-canvas {
+    aspect-ratio: 16 / 10;
+    background:
+        radial-gradient(circle at 50% 48%, rgba(159, 192, 128, 0.09), transparent 68%),
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        #141715;
+    background-size: 100% 100%, 32px 32px, 32px 32px, 100% 100%;
+    cursor: pointer;
+    transition: filter 0.25s ease;
+}
+
+.work-spotlight:hover .featured-media .turntable-canvas {
+    filter: brightness(1.06);
+}
+
+.work-spotlight:has(.turntable-canvas) .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid rgba(159, 192, 128, 0.35);
+}
+
+.work-spotlight:has(.turntable-canvas) .cover-badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #9fc080;
+    box-shadow: 0 0 8px #9fc080;
+    animation: ttPulse 2s ease-in-out infinite;
+}
+
+@keyframes ttPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(0.8); }
+}
+
+.turntable-hud {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.turntable-badge {
+    font: 11px/1 Consolas, monospace;
+    letter-spacing: 0.08em;
+    color: #9fc080;
+    background: rgba(20, 23, 21, 0.85);
+    border: 1px solid rgba(159, 192, 128, 0.3);
+    padding: 6px 10px;
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+}
+
+.turntable-controls {
+    display: flex;
+    gap: 6px;
+    pointer-events: auto;
+}
+
+.turntable-btn {
+    font: 11.5px/1 'Outfit', sans-serif;
+    letter-spacing: 0.04em;
+    color: #e6e9e4;
+    background: rgba(20, 23, 21, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.turntable-btn:hover,
+.turntable-btn.active {
+    border-color: #A3C585;
+    color: #A3C585;
+    background: rgba(163, 197, 133, 0.12);
+}
+
+.turntable-btn-primary {
+    border-color: rgba(163, 197, 133, 0.55);
+    color: #A3C585;
+    background: rgba(163, 197, 133, 0.14);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #ttInteractBtn {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-turntable-wrap {
+        aspect-ratio: 4 / 3;
+        min-height: 290px;
+    }
+    .turntable-hud {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .turntable-badge {
+        font-size: 10px;
+        padding: 5px 9px;
+    }
+    .turntable-controls {
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+    .turntable-btn {
+        min-height: 34px;
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+}
+
+
